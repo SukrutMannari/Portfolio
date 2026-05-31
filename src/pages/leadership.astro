@@ -3,6 +3,21 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import Toolbox from '../components/Toolbox.astro';
 import { TOOLBOX } from '../data/site';
 const tb = TOOLBOX.leadership;
+
+const tkdPhotos = [
+  { src: '/photos/Taekwondo1.jpeg',  caption: 'Receiving the first dojo trophy' },
+  { src: '/photos/Taekwondo2.jpeg',  caption: 'Board-break kick during belt test' },
+  { src: '/photos/Taekwondo4.jpeg',  caption: 'Proud moment with the gold cup' },
+  { src: '/photos/Taekwondo5.jpeg',  caption: 'Another kick mid-test' },
+  { src: '/photos/Taekwondo6.jpeg',  caption: 'Breaking technique, heads up focus' },
+  { src: '/photos/Taekwondo7.jpeg',  caption: 'Family photo after winning the Leadership Award' },
+  { src: '/photos/Taekwondo8.jpeg',  caption: 'Belt certificate ceremony at Fair Lawn TKD' },
+  { src: '/photos/Taekwondo9.jpeg',  caption: 'Receiving the Leadership Award trophy' },
+  { src: '/photos/Taekwondo10.jpeg', caption: 'Belt promotion celebration with family and Master' },
+  { src: '/photos/Taekwondo11.jpeg', caption: 'Early days — green belt at the first school in India' },
+  { src: '/photos/Taekwondo12.jpeg', caption: 'First belt test as a young student' },
+  { src: '/photos/Taekwondo13.jpeg', caption: 'First belt certificate, with instructors' },
+];
 ---
 
 <BaseLayout title="Leadership & Service">
@@ -22,4 +37,49 @@ const tb = TOOLBOX.leadership;
       <div class="hlcard"><div class="k">SERVICE</div><div class="v" data-edit>27+ library hours · Wall of Kindness · planned e-waste drive</div></div>
     </div>
   </section>
+
+  <section>
+    <div class="label">Taekwondo Journey</div>
+    <p data-edit style="max-width:680px;margin-bottom:28px">Six years of training — from a white belt in India to a 2nd-degree black belt and Leadership Award winner at Fair Lawn Taekwondo.</p>
+    <div class="tkd-grid">
+      {tkdPhotos.map((p) => (
+        <div class="tkd-card">
+          <img src={p.src} alt={p.caption} loading="lazy" />
+          <div class="tkd-cap">{p.caption}</div>
+        </div>
+      ))}
+    </div>
+  </section>
 </BaseLayout>
+
+<style>
+  .tkd-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 16px;
+  }
+  .tkd-card {
+    border-radius: 8px;
+    overflow: hidden;
+    border: 1.5px solid var(--grid-line);
+    background: var(--paper);
+    transition: box-shadow .2s, transform .2s;
+  }
+  .tkd-card:hover {
+    box-shadow: 0 6px 24px rgba(28,111,181,.13);
+    transform: translateY(-2px);
+  }
+  .tkd-card img {
+    width: 100%;
+    aspect-ratio: 4/3;
+    object-fit: cover;
+    display: block;
+  }
+  .tkd-cap {
+    padding: 10px 12px;
+    font-size: 12px;
+    color: var(--ink-dim);
+    font-family: var(--font-mono);
+    letter-spacing: .03em;
+  }
+</style>

@@ -31,4 +31,27 @@ const journal = defineCollection({
   }),
 });
 
-export const collections = { projects, journal };
+const photos = defineCollection({
+  type: 'content',
+  schema: z.object({
+    image: z.string(),
+    caption: z.string().optional(),
+    tag: z.string().optional(),
+    order: z.number().default(0),
+  }),
+});
+
+const games = defineCollection({
+  type: 'content',
+  schema: z.object({
+    title: z.string(),
+    category: z.enum(['python', 'game', 'experiment']),
+    description: z.string(),
+    thumbnail: z.string().optional(),
+    entry: z.string(), // path to game or PyScript file
+    github: z.string().optional(),
+    date: z.coerce.date(),
+  }),
+});
+
+export const collections = { projects, journal, photos, games };

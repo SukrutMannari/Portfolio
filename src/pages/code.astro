@@ -1,17 +1,716 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Toolbox from '../components/Toolbox.astro';
-import InteractiveCorner from '../components/InteractiveCorner.astro';
+import PyRunner from '../components/PyRunner.astro';
+import { getCollection } from 'astro:content';
 import { TOOLBOX } from '../data/site';
+
 const tb = TOOLBOX.code;
+const gamesEntries = await getCollection('games');
+
+// Sort by date descending and pre-process python code
+const builds = gamesEntries
+  .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf())
+  .map(entry => {
+    let pyCode = '';
+    if (entry.data.category === 'python') {
+      const match = entry.body.match(/```python\n([\s\S]*?)\n```/);
+      pyCode = match ? match[1] : entry.body;
+    }
+    return {
+      slug: entry.slug,
+      title: entry.data.title,
+      category: entry.data.category,
+      description: entry.data.description,
+      entry: entry.data.entry,
+      github: entry.data.github,
+      pyCode
+    };
+  });
 ---
 
-<BaseLayout title="Code & Games">
+<BaseLayout title="Code & Games" usePyScript={true}>
   <div class="page-head">
     <div class="label">// CODE &amp; GAMES</div>
     <h1 data-edit>Code &amp; Games</h1>
-    <p data-edit>Small programs and games I build to learn — and because they're fun to share. Play them right here; source is on GitHub. (Phase 2 adds live Python via PyScript and a per-game source view.)</p>
+    <p data-edit>
+      Small programs and games I build to learn — and because they're fun to share. Play them right here in the browser; the source is on GitHub.
+    </p>
   </div>
-  <section style="padding-top:0;padding-bottom:0"><Toolbox label={tb.label} items={tb.items} /></section>
-  <section><InteractiveCorner /></section>
+
+  <section style="padding-top:0;padding-bottom:0">
+    <Toolbox label={tb.label} items={tb.items} />
+  </section>
+
+  <section class="code-section">
+    <div class="arcade-container">
+      <!-- Build Selector Sidebar -->
+      <aside class="build-sidebar">
+        <div class="sidebar-header">// CHOOSE A BUILD</div>
+        <div class="filter-row">
+          <button class="filter-btn active" data-filter="all">All</button>
+          <button class="filter-btn" data-filter="python">Python</button>
+          <button class="filter-btn" data-filter="game">Games</button>
+          <button class="filter-btn" data-filter="experiment">Exp</button>
+        </div>
+        
+        <div class="build-list">
+          {builds.map((b) => (
+            <div 
+              class="build-item" 
+              data-slug={b.slug}
+              data-category={b.category}
+              data-entry={b.entry}
+            >
+              <div class="build-title">{b.title}</div>
+              <div class="build-meta">
+                <span class={`tag-badge ${b.category}`}>{b.category.toUpperCase()}</span>
+              </div>
+            </div>
+          ))}
+        </div>
+      </aside>
+
+      <!-- Active Stage -->
+      <div class="stage-container">
+        {builds.map((b, index) => (
+          <div class={`stage-pane ${index === 0 ? 'active' : ''}`} id={`pane-${b.slug}`}>
+            <div class="pane-header">
+              <div>
+                <h2>{b.title}</h2>
+                <div class="meta-row">
+                  <span class={`tag-badge ${b.category}`}>{b.category.toUpperCase()}</span>
+                  {b.github && <a href={b.github} class="github-link" target="_blank" rel="noreferrer">GitHub Repo ↗</a>}
+                </div>
+              </div>
+            </div>
+
+            <div class="pane-description">
+              <p>{b.description}</p>
+            </div>
+
+            <!-- Dynamic Execution Areas -->
+            <div class="execution-area">
+              <!-- Case 1: Python PyRunner -->
+              {b.category === 'python' && (
+                <PyRunner code={b.pyCode} title={b.title} id={b.slug} />
+              )}
+
+              <!-- Case 2: Interactive Snake Game -->
+              {b.category === 'game' && b.entry === 'snake' && (
+                <div class="game-stage">
+                  <div class="game-controls-bar">
+                    <span class="game-score">Score: <b id="snake-score">0</b></span>
+                    <button class="game-start-btn" id="snake-start">START GAME</button>
+                  </div>
+                  <div class="canvas-wrapper">
+                    <canvas id="snake-canvas" width="360" height="360"></canvas>
+                    <div id="snake-overlay" class="canvas-overlay">Press START to Play</div>
+                  </div>
+                  <div class="dpad" id="snake-dpad">
+                    <button class="up" data-dir="0,-1">↑</button>
+                    <button class="left" data-dir="-1,0">←</button>
+                    <button class="down" data-dir="0,1">↓</button>
+                    <button class="right" data-dir="1,0">→</button>
+                  </div>
+                </div>
+              )}
+
+              <!-- Case 3: Interstellar Proxy Browser -->
+              {b.category === 'experiment' && b.entry === 'proxy-browser' && (
+                <div class="proxy-stage">
+                  <div class="proxy-inputs">
+                    <input type="url" id="proxy-url" value="https://example.com" placeholder="https://example.com" class="proxy-input" />
+                    <button id="proxy-go" class="proxy-btn">LOAD URL</button>
+                  </div>
+                  <div class="proxy-frame-wrap">
+                    <iframe id="proxy-iframe" src="https://example.com" class="proxy-iframe"></iframe>
+                  </div>
+                  <div class="proxy-note">
+                    <strong>Technical Note:</strong> If the frame is blank, it's because the target website sets headers like <code>X-Frame-Options: DENY</code> to prevent security issues (clickjacking). Open your browser DevTools (F12) to see the blocked loading in action!
+                  </div>
+                </div>
+              )}
+
+              <!-- Case 4: General Placeholder for un-implemented games -->
+              {b.category === 'game' && b.entry !== 'snake' && (
+                <div class="placeholder-stage">
+                  <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="var(--blue)" stroke-width="1.5">
+                    <rect x="2" y="6" width="20" height="12" rx="2" />
+                    <path d="M6 12h4M8 10v4M15 11h.01M18 13h.01" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" />
+                  </svg>
+                  <h3>Interactive Player Loading</h3>
+                  <p>This browser game is currently being ported to our static framework. Check the project details or visit the GitHub repository to view the offline builds.</p>
+                  {b.github && <a href={b.github} target="_blank" class="btn" rel="noreferrer">View Source on GitHub</a>}
+                </div>
+              )}
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
 </BaseLayout>
+
+<style>
+  .code-section {
+    padding-top: 24px;
+  }
+  .arcade-container {
+    display: grid;
+    grid-template-columns: 260px 1fr;
+    border: 1px solid var(--line);
+    border-radius: 5px;
+    background: var(--paper-2);
+    overflow: hidden;
+    min-height: 550px;
+  }
+  
+  /* Sidebar styles */
+  .build-sidebar {
+    border-right: 1px solid var(--line-soft);
+    background: rgba(28, 111, 181, 0.03);
+    display: flex;
+    flex-direction: column;
+  }
+  .sidebar-header {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 1px;
+    color: var(--ink-dim);
+    padding: 14px 16px;
+    border-bottom: 1px solid var(--line-soft);
+    background: rgba(28, 111, 181, 0.02);
+  }
+  .filter-row {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    border-bottom: 1px solid var(--line-soft);
+    background: var(--paper-3);
+  }
+  .filter-btn {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    padding: 8px 0;
+    border: 0;
+    border-right: 1px solid var(--line-soft);
+    background: transparent;
+    cursor: pointer;
+    color: var(--ink-dim);
+    transition: all 0.15s ease;
+  }
+  .filter-btn:last-child {
+    border-right: 0;
+  }
+  .filter-btn:hover {
+    background: rgba(28, 111, 181, 0.05);
+    color: var(--ink);
+  }
+  .filter-btn.active {
+    background: var(--paper-2);
+    color: var(--blue);
+    font-weight: 600;
+  }
+  .build-list {
+    overflow-y: auto;
+    flex-grow: 1;
+    max-height: 500px;
+  }
+  .build-item {
+    padding: 14px 16px;
+    border-bottom: 1px solid var(--line-soft);
+    cursor: pointer;
+    transition: background 0.15s ease;
+  }
+  .build-item:hover {
+    background: rgba(28, 111, 181, 0.06);
+  }
+  .build-item.active {
+    background: var(--blue);
+    color: #fff;
+  }
+  .build-title {
+    font-size: 14px;
+    font-weight: 600;
+  }
+  .build-meta {
+    margin-top: 6px;
+  }
+  
+  /* Stage styles */
+  .stage-container {
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    background: var(--paper-2);
+  }
+  .stage-pane {
+    display: none;
+    flex-direction: column;
+    height: 100%;
+    animation: fade 0.3s ease-in-out;
+  }
+  .stage-pane.active {
+    display: flex;
+  }
+  @keyframes fade {
+    from { opacity: 0; transform: translateY(4px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .pane-header {
+    border-bottom: 1px solid var(--line-soft);
+    padding-bottom: 14px;
+    margin-bottom: 14px;
+  }
+  .pane-header h2 {
+    font-size: 24px;
+    font-weight: 800;
+    margin: 0;
+  }
+  .meta-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-top: 6px;
+  }
+  .github-link {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--blue);
+  }
+  .github-link:hover {
+    color: var(--orange);
+  }
+  .pane-description {
+    font-size: 14.5px;
+    color: var(--ink-dim);
+    margin-bottom: 24px;
+    max-width: 75ch;
+  }
+  
+  /* Tag colors */
+  .tag-badge {
+    font-family: var(--font-mono);
+    font-size: 9px;
+    padding: 2px 6px;
+    border-radius: 2px;
+    letter-spacing: 0.5px;
+    font-weight: 600;
+    display: inline-block;
+  }
+  .tag-badge.python {
+    color: #22D3EE;
+    border: 1px solid rgba(34, 211, 238, 0.4);
+    background: rgba(34, 211, 238, 0.05);
+  }
+  .tag-badge.game {
+    color: var(--orange);
+    border: 1px solid rgba(232, 89, 12, 0.4);
+    background: rgba(232, 89, 12, 0.05);
+  }
+  .tag-badge.experiment {
+    color: var(--blue);
+    border: 1px solid rgba(28, 111, 181, 0.4);
+    background: rgba(28, 111, 181, 0.05);
+  }
+  
+  /* Canvas / Snake specific styles */
+  .game-stage {
+    display: flex;
+    flex-direction: column;
+    max-width: 400px;
+    margin: 0 auto;
+    border: 1px solid var(--line);
+    border-radius: 4px;
+    overflow: hidden;
+    background: var(--paper-2);
+  }
+  .game-controls-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 16px;
+    border-bottom: 1px solid var(--line-soft);
+    background: var(--paper-3);
+    font-family: var(--font-mono);
+    font-size: 12px;
+  }
+  .game-score {
+    font-weight: 600;
+  }
+  .game-score b {
+    color: var(--blue);
+  }
+  .game-start-btn {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 600;
+    color: #fff;
+    background: var(--orange);
+    border: 1px solid var(--orange);
+    padding: 5px 12px;
+    border-radius: 2px;
+    cursor: pointer;
+  }
+  .canvas-wrapper {
+    position: relative;
+    background: #0A1B2B;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 18px;
+  }
+  #snake-canvas {
+    background: var(--paper);
+    border: 1px solid var(--line-soft);
+    border-radius: 4px;
+    display: block;
+  }
+  .canvas-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(10, 27, 43, 0.85);
+    color: #fff;
+    font-family: var(--font-display);
+    font-size: 16px;
+    font-weight: 600;
+    display: grid;
+    place-items: center;
+    text-align: center;
+    pointer-events: none;
+    line-height: 1.5;
+  }
+  .dpad {
+    display: grid;
+    grid-template-columns: repeat(3, 42px);
+    grid-template-rows: repeat(2, 42px);
+    gap: 6px;
+    justify-content: center;
+    padding: 14px;
+    background: var(--paper-2);
+    border-top: 1px solid var(--line-soft);
+  }
+  .dpad button {
+    border: 1px solid var(--line);
+    background: var(--paper-3);
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    color: var(--blue);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  .dpad button:hover {
+    background: var(--blue);
+    color: #fff;
+  }
+  .dpad .up { grid-column: 2; grid-row: 1; }
+  .dpad .left { grid-column: 1; grid-row: 2; }
+  .dpad .down { grid-column: 2; grid-row: 2; }
+  .dpad .right { grid-column: 3; grid-row: 2; }
+
+  /* Proxy specific styles */
+  .proxy-stage {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .proxy-inputs {
+    display: flex;
+    gap: 10px;
+  }
+  .proxy-input {
+    flex-grow: 1;
+    font-family: var(--font-mono);
+    font-size: 13px;
+    padding: 8px 12px;
+    border: 1px solid var(--line);
+    border-radius: 3px;
+    background: var(--paper-2);
+    color: var(--ink);
+  }
+  .proxy-input:focus {
+    outline: none;
+    border-color: var(--blue);
+  }
+  .proxy-btn {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 600;
+    color: #fff;
+    background: var(--blue);
+    border: 1px solid var(--blue);
+    padding: 8px 16px;
+    border-radius: 3px;
+    cursor: pointer;
+  }
+  .proxy-btn:hover {
+    background: var(--blue-d);
+  }
+  .proxy-frame-wrap {
+    border: 1px solid var(--line);
+    border-radius: 4px;
+    overflow: hidden;
+    height: 350px;
+    background: #fff;
+  }
+  .proxy-iframe {
+    width: 100%;
+    height: 100%;
+    border: 0;
+  }
+  .proxy-note {
+    font-size: 11px;
+    color: var(--ink-dim);
+    line-height: 1.4;
+    border-top: 1px dashed var(--line-soft);
+    padding-top: 8px;
+  }
+
+  /* Placeholder Stage Styles */
+  .placeholder-stage {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    border: 1px dashed var(--line);
+    border-radius: 4px;
+    padding: 48px 24px;
+    background: rgba(28, 111, 181, 0.01);
+  }
+  .placeholder-stage h3 {
+    margin: 12px 0 6px;
+    font-size: 18px;
+    font-weight: 700;
+  }
+  .placeholder-stage p {
+    font-size: 13.5px;
+    color: var(--ink-dim);
+    max-width: 48ch;
+    margin-bottom: 18px;
+  }
+  .placeholder-stage .btn {
+    font-size: 11px;
+    padding: 8px 16px;
+  }
+
+  @media (max-width: 980px) {
+    .arcade-container {
+      grid-template-columns: 1fr;
+    }
+    .build-sidebar {
+      border-right: 0;
+      border-bottom: 1px solid var(--line-soft);
+    }
+    .build-list {
+      display: flex;
+      overflow-x: auto;
+      max-height: none;
+    }
+    .build-item {
+      white-space: nowrap;
+      border-bottom: 0;
+      border-right: 1px solid var(--line-soft);
+    }
+    .build-item.active {
+      background: var(--blue);
+      color: #fff;
+    }
+    .sidebar-header {
+      display: none;
+    }
+  }
+</style>
+
+<script>
+  // Page logic: Sidebar switching & Filter logic
+  const items = document.querySelectorAll<HTMLElement>('.build-item');
+  const panes = document.querySelectorAll<HTMLElement>('.stage-pane');
+  const filterBtns = document.querySelectorAll<HTMLElement>('.filter-btn');
+
+  // Activate pane on click
+  function activateBuild(slug: string) {
+    items.forEach(el => {
+      el.classList.toggle('active', el.getAttribute('data-slug') === slug);
+    });
+    panes.forEach(pane => {
+      pane.classList.toggle('active', pane.id === `pane-${slug}`);
+    });
+
+    // Reset games if active pane switches
+    stopSnake();
+  }
+
+  items.forEach(item => {
+    item.addEventListener('click', () => {
+      const slug = item.getAttribute('data-slug')!;
+      activateBuild(slug);
+    });
+  });
+
+  // Filter items in sidebar
+  filterBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      filterBtns.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+
+      const filter = btn.getAttribute('data-filter')!;
+      let firstVisibleSlug = '';
+
+      items.forEach(item => {
+        const cat = item.getAttribute('data-category')!;
+        if (filter === 'all' || cat === filter) {
+          item.style.display = '';
+          if (!firstVisibleSlug) firstVisibleSlug = item.getAttribute('data-slug')!;
+        } else {
+          item.style.display = 'none';
+        }
+      });
+
+      // Switch to first visible
+      if (firstVisibleSlug) {
+        activateBuild(firstVisibleSlug);
+      }
+    });
+  });
+
+  // Proxy Browser logic
+  const proxyGo = document.getElementById('proxy-go');
+  const proxyUrl = document.getElementById('proxy-url') as HTMLInputElement | null;
+  const proxyIframe = document.getElementById('proxy-iframe') as HTMLIFrameElement | null;
+
+  if (proxyGo && proxyUrl && proxyIframe) {
+    proxyGo.addEventListener('click', () => {
+      let url = proxyUrl.value.trim();
+      if (url && !/^https?:\/\//i.test(url)) {
+        url = 'https://' + url;
+        proxyUrl.value = url;
+      }
+      proxyIframe.src = url;
+    });
+  }
+
+  // --- SNAKE GAME ENGINE IN PAGE ---
+  let snakeLoop: any = null;
+  let snakeRunning = false;
+
+  function stopSnake() {
+    snakeRunning = false;
+    if (snakeLoop) {
+      clearInterval(snakeLoop);
+      snakeLoop = null;
+    }
+    const startBtn = document.getElementById('snake-start');
+    if (startBtn) startBtn.textContent = 'START GAME';
+    const overlay = document.getElementById('snake-overlay');
+    if (overlay) {
+      overlay.style.display = 'grid';
+      overlay.innerHTML = 'Game Stopped<br><span style="font-size:11px;color:rgba(255,255,255,0.6)">Press START to Play</span>';
+    }
+  }
+
+  const canvas = document.getElementById('snake-canvas') as HTMLCanvasElement | null;
+  if (canvas) {
+    const ctx = canvas.getContext('2d')!;
+    const scoreEl = document.getElementById('snake-score')!;
+    const startBtn = document.getElementById('snake-start')!;
+    const overlay = document.getElementById('snake-overlay')!;
+    const dpad = document.getElementById('snake-dpad')!;
+
+    const GRID = 18;
+    const CELL = canvas.width / GRID;
+    let snake: { x: number; y: number }[] = [];
+    let dir = { x: 1, y: 0 };
+    let nextDir = { x: 1, y: 0 };
+    let food = { x: 5, y: 5 };
+    let score = 0;
+
+    function rr(x: number, y: number, w: number, h: number) {
+      ctx.beginPath();
+      // @ts-ignore
+      if (ctx.roundRect) ctx.roundRect(x, y, w, h, 3); else ctx.rect(x, y, w, h);
+      ctx.fill();
+    }
+
+    function placeFood() {
+      while (true) {
+        const f = { x: (Math.random() * GRID) | 0, y: (Math.random() * GRID) | 0 };
+        if (!snake.some((s) => s.x === f.x && s.y === f.y)) { food = f; return; }
+      }
+    }
+
+    function reset() {
+      snake = [{ x: 8, y: 9 }, { x: 7, y: 9 }, { x: 6, y: 9 }];
+      dir = { x: 1, y: 0 }; nextDir = { x: 1, y: 0 }; score = 0; placeFood();
+      scoreEl.textContent = '0'; draw();
+    }
+
+    function draw() {
+      ctx.clearRect(0, 0, canvas!.width, canvas!.height);
+      ctx.fillStyle = '#E8590C'; rr(food.x * CELL + 2, food.y * CELL + 2, CELL - 4, CELL - 4);
+      snake.forEach((s, i) => { ctx.fillStyle = i === 0 ? '#155A95' : '#1C6FB5'; rr(s.x * CELL + 1, s.y * CELL + 1, CELL - 2, CELL - 2); });
+    }
+
+    function step() {
+      dir = nextDir;
+      const head = { x: snake[0].x + dir.x, y: snake[0].y + dir.y };
+      if (head.x < 0 || head.x >= GRID || head.y < 0 || head.y >= GRID || snake.some((s) => s.x === head.x && s.y === head.y)) return gameOver();
+      snake.unshift(head);
+      if (head.x === food.x && head.y === food.y) { score += 10; scoreEl.textContent = String(score); placeFood(); } else snake.pop();
+      draw();
+    }
+
+    function start() {
+      reset(); 
+      snakeRunning = true; 
+      startBtn.textContent = 'RESTART'; 
+      overlay.style.display = 'none';
+      clearInterval(snakeLoop); 
+      snakeLoop = setInterval(step, 120);
+    }
+
+    function gameOver() {
+      snakeRunning = false; 
+      clearInterval(snakeLoop); 
+      startBtn.textContent = 'START GAME'; 
+      overlay.style.display = 'grid';
+      overlay.innerHTML = 'GAME OVER<br>Score: ' + score + '<br><span style="font-size:11px;color:rgba(255,255,255,0.6)">Press START to Play again</span>';
+    }
+
+    function setDir(x: number, y: number) { 
+      if (!snakeRunning) return; 
+      if (x === -dir.x && y === -dir.y) return; 
+      nextDir = { x, y }; 
+    }
+
+    document.addEventListener('keydown', (e) => {
+      // Find parent stage and check if it is active
+      const snakePane = document.getElementById('pane-classic-snake');
+      if (!snakePane || !snakePane.classList.contains('active') || !snakeRunning) return;
+      
+      const k = e.key.toLowerCase();
+      if (k === 'arrowup' || k === 'w') { setDir(0, -1); e.preventDefault(); }
+      else if (k === 'arrowdown' || k === 's') { setDir(0, 1); e.preventDefault(); }
+      else if (k === 'arrowleft' || k === 'a') { setDir(-1, 0); e.preventDefault(); }
+      else if (k === 'arrowright' || k === 'd') { setDir(1, 0); e.preventDefault(); }
+    });
+
+    dpad.querySelectorAll<HTMLElement>('[data-dir]').forEach((b) =>
+      b.addEventListener('click', () => { 
+        const p = b.getAttribute('data-dir')!.split(',').map(Number); 
+        setDir(p[0], p[1]); 
+      })
+    );
+
+    startBtn.addEventListener('click', start);
+    reset();
+  }
+
+  // Setup initial active build
+  if (items.length > 0) {
+    const initialSlug = items[0].getAttribute('data-slug')!;
+    activateBuild(initialSlug);
+  }
+</script>

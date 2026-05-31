@@ -1,0 +1,73 @@
+backend:
+  name: github
+  # Replace with your actual GitHub username and repository name
+  repo: sukrut-mannari/sukrut-portfolio
+  branch: main
+  # Local host for local development. Change this to your production domain (e.g., https://sukrutmannari.com) when deploying.
+  base_url: http://localhost:4321
+  auth_endpoint: api/auth
+
+media_folder: "public/images"
+public_folder: "/images"
+
+collections:
+  - name: "projects"
+    label: "Projects"
+    folder: "src/content/projects"
+    create: true
+    slug: "{{slug}}"
+    fields:
+      - { label: "Title", name: "title", widget: "string" }
+      - { label: "Category", name: "category", widget: "select", options: ["aero", "robotics", "electronics", "cad", "automation", "ai", "structures"] }
+      - { label: "Status", name: "status", widget: "select", options: ["complete", "in-progress", "planned"] }
+      - { label: "Summary", name: "summary", widget: "string" }
+      - { label: "Skills", name: "skills", widget: "list" }
+      - { label: "Thumbnail", name: "thumbnail", widget: "image", required: false }
+      - { label: "Gallery", name: "gallery", widget: "list", field: { label: "Image", name: "image", widget: "image" }, required: false }
+      - { label: "3D Model File (.glb)", name: "model", widget: "file", required: false }
+      - { label: "GitHub URL", name: "github", widget: "string", required: false }
+      - { label: "Featured", name: "featured", widget: "boolean", default: false }
+      - { label: "Order", name: "order", widget: "number", value_type: "int", default: 0 }
+      - { label: "Date", name: "date", widget: "datetime" }
+      - { label: "Body", name: "body", widget: "markdown" }
+
+  - name: "journal"
+    label: "Journal Posts"
+    folder: "src/content/journal"
+    create: true
+    slug: "{{year}}-{{month}}-{{day}}-{{slug}}"
+    fields:
+      - { label: "Title", name: "title", widget: "string" }
+      - { label: "Date", name: "date", widget: "datetime" }
+      - { label: "Category", name: "category", widget: "select", options: ["music", "engineering", "academics", "service", "competition", "other"] }
+      - { label: "Cover Image", name: "cover", widget: "image", required: false }
+      - { label: "Excerpt", name: "excerpt", widget: "string" }
+      - { label: "Featured", name: "featured", widget: "boolean", default: false }
+      - { label: "Body", name: "body", widget: "markdown" }
+
+  - name: "photos"
+    label: "Photos (Homepage Reel & Gallery)"
+    folder: "src/content/photos"
+    create: true
+    slug: "{{slug}}"
+    fields:
+      - { label: "Title/Slug", name: "title", widget: "string" }
+      - { label: "Image", name: "image", widget: "image" }
+      - { label: "Caption", name: "caption", widget: "string", required: false }
+      - { label: "Tag", name: "tag", widget: "string", required: false }
+      - { label: "Order", name: "order", widget: "number", value_type: "int", default: 0 }
+
+  - name: "games"
+    label: "Games & Apps"
+    folder: "src/content/games"
+    create: true
+    slug: "{{slug}}"
+    fields:
+      - { label: "Title", name: "title", widget: "string" }
+      - { label: "Category", name: "category", widget: "select", options: ["python", "game", "experiment"] }
+      - { label: "Description", name: "description", widget: "string" }
+      - { label: "Thumbnail", name: "thumbnail", widget: "image", required: false }
+      - { label: "Entry File Path", name: "entry", widget: "string" }
+      - { label: "GitHub URL", name: "github", widget: "string", required: false }
+      - { label: "Date", name: "date", widget: "datetime" }
+      - { label: "Body", name: "body", widget: "markdown", required: false }

@@ -1,0 +1,236 @@
+---
+interface Props {
+  images: string[];
+  alt?: string;
+}
+const { images, alt = "Project Image" } = Astro.props;
+---
+
+{images && images.length > 0 && (
+  <div class="gallery-component">
+    <div class="gallery-grid">
+      {images.map((img, index) => (
+        <div class="gallery-thumb-wrap" data-index={index}>
+          <img src={img} alt={`${alt} - Gallery Image ${index + 1}`} loading="lazy" class="gallery-thumb" />
+        </div>
+      ))}
+    </div>
+
+    <!-- Lightbox Modal -->
+    <div id="galleryLightbox" class="lightbox">
+      <span class="lightbox-close" id="lightboxClose">&times;</span>
+      <div class="lightbox-content">
+        <img id="lightboxImage" src="" alt="Enlarged view" />
+        <div id="lightboxCaption" class="lightbox-caption"></div>
+      </div>
+      <button class="lightbox-nav prev" id="lightboxPrev" aria-label="Previous image">&#10094;</button>
+      <button class="lightbox-nav next" id="lightboxNext" aria-label="Next image">&#10095;</button>
+    </div>
+  </div>
+)}
+
+<style>
+  .gallery-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 14px;
+    margin-top: 14px;
+  }
+  .gallery-thumb-wrap {
+    aspect-ratio: 4/3;
+    cursor: pointer;
+    overflow: hidden;
+    border-radius: 3px;
+    border: 1px solid var(--line-soft);
+    background: var(--paper-2);
+    transition: transform 0.2s ease, border-color 0.2s ease;
+  }
+  .gallery-thumb-wrap:hover {
+    transform: scale(1.02);
+    border-color: var(--blue);
+  }
+  .gallery-thumb {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  /* Lightbox Styles */
+  .lightbox {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(21, 38, 59, 0.95);
+    backdrop-filter: blur(4px);
+    justify-content: center;
+    align-items: center;
+  }
+  .lightbox.active {
+    display: flex;
+  }
+  .lightbox-content {
+    position: relative;
+    max-width: 85%;
+    max-height: 80%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  .lightbox-content img {
+    max-width: 100%;
+    max-height: 75vh;
+    object-fit: contain;
+    border: 1px solid var(--line);
+    border-radius: 4px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+  }
+  .lightbox-caption {
+    margin-top: 14px;
+    color: var(--ink);
+    font-family: var(--font-mono);
+    font-size: 13px;
+    text-align: center;
+    background: var(--paper-2);
+    padding: 6px 14px;
+    border: 1px solid var(--line);
+    border-radius: 3px;
+  }
+  .lightbox-close {
+    position: absolute;
+    top: 20px;
+    right: 30px;
+    color: var(--ink-dim);
+    font-size: 40px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: color 0.15s ease;
+  }
+  .lightbox-close:hover {
+    color: var(--orange);
+  }
+  .lightbox-nav {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: var(--paper-2);
+    border: 1px solid var(--line);
+    color: var(--ink);
+    font-size: 20px;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: all 0.2s ease;
+  }
+  .lightbox-nav:hover {
+    background: var(--blue);
+    color: #fff;
+    border-color: var(--blue);
+  }
+  .lightbox-nav.prev {
+    left: 30px;
+  }
+  .lightbox-nav.next {
+    right: 30px;
+  }
+
+  @media (max-width: 980px) {
+    .gallery-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+  @media (max-width: 560px) {
+    .gallery-grid {
+      grid-template-columns: 1fr;
+    }
+    .lightbox-nav {
+      width: 38px;
+      height: 38px;
+      font-size: 16px;
+    }
+    .lightbox-nav.prev { left: 10px; }
+    .lightbox-nav.next { right: 10px; }
+  }
+</style>
+
+<script>
+  const thumbs = document.querySelectorAll<HTMLElement>('.gallery-thumb-wrap');
+  const lightbox = document.getElementById('galleryLightbox');
+  const lightboxImg = document.getElementById('lightboxImage') as HTMLImageElement;
+  const lightboxCap = document.getElementById('lightboxCaption');
+  const closeBtn = document.getElementById('lightboxClose');
+  const prevBtn = document.getElementById('lightboxPrev');
+  const nextBtn = document.getElementById('lightboxNext');
+
+  if (thumbs.length > 0 && lightbox && lightboxImg && lightboxCap) {
+    let currentIndex = 0;
+    const images = Array.from(thumbs).map(t => {
+      const img = t.querySelector('img');
+      return {
+        src: img?.src || '',
+        alt: img?.alt || ''
+      };
+    });
+
+    const openLightbox = (index: number) => {
+      currentIndex = index;
+      updateLightbox();
+      lightbox.classList.add('active');
+      document.body.style.overflow = 'hidden';
+    };
+
+    const closeLightbox = () => {
+      lightbox.classList.remove('active');
+      document.body.style.overflow = '';
+    };
+
+    const updateLightbox = () => {
+      const imgData = images[currentIndex];
+      if (imgData) {
+        lightboxImg.src = imgData.src;
+        lightboxCap.textContent = imgData.alt;
+      }
+    };
+
+    const showPrev = () => {
+      currentIndex = (currentIndex - 1 + images.length) % images.length;
+      updateLightbox();
+    };
+
+    const showNext = () => {
+      currentIndex = (currentIndex + 1) % images.length;
+      updateLightbox();
+    };
+
+    thumbs.forEach(t => {
+      t.addEventListener('click', () => {
+        const index = parseInt(t.getAttribute('data-index') || '0', 10);
+        openLightbox(index);
+      });
+    });
+
+    closeBtn?.addEventListener('click', closeLightbox);
+    prevBtn?.addEventListener('click', showPrev);
+    nextBtn?.addEventListener('click', showNext);
+
+    lightbox.addEventListener('click', (e) => {
+      if (e.target === lightbox) {
+        closeLightbox();
+      }
+    });
+
+    window.addEventListener('keydown', (e) => {
+      if (!lightbox.classList.contains('active')) return;
+      if (e.key === 'Escape') closeLightbox();
+      if (e.key === 'ArrowLeft') showPrev();
+      if (e.key === 'ArrowRight') showNext();
+    });
+  }
+</script>

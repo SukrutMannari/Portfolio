@@ -1,0 +1,209 @@
+---
+interface Props {
+  code: string;
+  title?: string;
+  id: string;
+}
+const { code, title = "Python Program", id } = Astro.props;
+---
+
+<div class="py-runner-card">
+  <div class="runner-header">
+    <span class="runner-title">// READOUT: {title}</span>
+    <button class="run-btn" id={`run-${id}`}>RUN PROGRAM ▶</button>
+  </div>
+  
+  <div class="runner-body">
+    <!-- Code Viewer -->
+    <div class="code-pane">
+      <div class="pane-label">SOURCE CODE</div>
+      <pre><code>{code}</code></pre>
+    </div>
+
+    <!-- Console Output -->
+    <div class="console-pane">
+      <div class="pane-label">CONSOLE OUTPUT</div>
+      <pre class="console-output" id={`console-${id}`}>Ready. Click "RUN PROGRAM" above.</pre>
+      <button class="clear-btn" id={`clear-${id}`}>Clear Output</button>
+    </div>
+  </div>
+</div>
+
+<style>
+  .py-runner-card {
+    border: 1px solid var(--line);
+    border-radius: 4px;
+    background: var(--paper-2);
+    overflow: hidden;
+    margin-bottom: 24px;
+    font-family: var(--font-mono);
+  }
+  .runner-header {
+    background: rgba(28, 111, 181, 0.05);
+    border-bottom: 1px solid var(--line-soft);
+    padding: 10px 16px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .runner-title {
+    font-size: 11px;
+    color: var(--blue);
+    font-weight: 600;
+  }
+  .run-btn {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 600;
+    color: #fff;
+    background: var(--orange);
+    border: 1px solid var(--orange);
+    padding: 6px 14px;
+    border-radius: 3px;
+    cursor: pointer;
+    transition: filter 0.15s ease;
+  }
+  .run-btn:hover {
+    filter: brightness(1.1);
+  }
+  .runner-body {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    border-top: 1px solid transparent;
+  }
+  .code-pane, .console-pane {
+    padding: 14px;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+  }
+  .code-pane {
+    border-right: 1px solid var(--line-soft);
+    background: rgba(28, 111, 181, 0.02);
+  }
+  .console-pane {
+    background: #0A1B2B; /* --bp-navy blueprint look */
+    color: #22D3EE;     /* --accent cyan look */
+  }
+  .pane-label {
+    font-size: 9px;
+    color: var(--ink-dim);
+    letter-spacing: 1px;
+    margin-bottom: 8px;
+    border-bottom: 1px dashed var(--line-soft);
+    padding-bottom: 4px;
+  }
+  .console-pane .pane-label {
+    color: rgba(34, 211, 238, 0.5);
+    border-bottom-color: rgba(34, 211, 238, 0.15);
+  }
+  pre {
+    margin: 0;
+    font-size: 12px;
+    overflow-x: auto;
+    white-space: pre;
+    line-height: 1.5;
+  }
+  .console-output {
+    flex-grow: 1;
+    font-size: 12px;
+    color: #e2f8ff;
+    min-height: 150px;
+    max-height: 300px;
+    overflow-y: auto;
+    white-space: pre-wrap;
+    word-break: break-all;
+  }
+  .clear-btn {
+    align-self: flex-end;
+    background: transparent;
+    border: 1px solid rgba(34, 211, 238, 0.3);
+    color: rgba(34, 211, 238, 0.7);
+    font-family: var(--font-mono);
+    font-size: 10px;
+    padding: 4px 10px;
+    border-radius: 2px;
+    cursor: pointer;
+    margin-top: 10px;
+    transition: all 0.15s ease;
+  }
+  .clear-btn:hover {
+    border-color: #22D3EE;
+    color: #22D3EE;
+  }
+
+  @media (max-width: 768px) {
+    .runner-body {
+      grid-template-columns: 1fr;
+    }
+    .code-pane {
+      border-right: 0;
+      border-bottom: 1px solid var(--line-soft);
+    }
+  }
+</style>
+
+<script is:inline define:vars={{ id, code }}>
+  (function () {
+    const runBtn = document.getElementById(`run-${id}`);
+    const clearBtn = document.getElementById(`clear-${id}`);
+    const consoleOutput = document.getElementById(`console-${id}`);
+
+    if (!runBtn || !clearBtn || !consoleOutput) return;
+
+    clearBtn.addEventListener('click', () => {
+      consoleOutput.textContent = 'Console cleared.';
+    });
+
+    runBtn.addEventListener('click', () => {
+      consoleOutput.textContent = 'Running...\n';
+      
+      // We wrap the user python code with custom output redirection using standard Python sys module
+      const wrappedPython = `
+import sys
+from js import document
+
+class ElementWriter:
+    def __init__(self, el_id):
+        self.el_id = el_id
+    def write(self, text):
+        el = document.getElementById(self.el_id)
+        if el:
+            el.textContent += text
+    def flush(self):
+        pass
+
+# Setup redirect
+sys.stdout = ElementWriter("console-${id}")
+sys.stderr = ElementWriter("console-${id}")
+
+# Run user code
+try:
+${code.split('\n').map(line => '    ' + line).join('\n')}
+except Exception as e:
+    print("\\nError during execution:", e, file=sys.stderr)
+`;
+
+      // Check if PyScript runtime is loaded
+      if (typeof pyScript === 'undefined' && !document.querySelector('script[src*="pyscript"]')) {
+        consoleOutput.textContent = 'Error: PyScript runtime is loading or not available. Please verify internet connection.';
+        return;
+      }
+
+      // Create temporary script tag and execute
+      // Modern PyScript runs script tags of type "py"
+      const script = document.createElement('script');
+      script.type = 'py';
+      script.textContent = wrappedPython;
+
+      // Clean up previous runs if any
+      const oldScript = document.getElementById(`py-script-run-${id}`);
+      if (oldScript) {
+        oldScript.remove();
+      }
+      script.id = `py-script-run-${id}`;
+
+      document.body.appendChild(script);
+    });
+  })();
+</script>

@@ -7,8 +7,10 @@ import { SITE } from '../data/site';
 interface Props {
   title?: string;
   description?: string;
+  useModelViewer?: boolean;
+  usePyScript?: boolean;
 }
-const { title, description = SITE.description } = Astro.props;
+const { title, description = SITE.description, useModelViewer = false, usePyScript = false } = Astro.props;
 const pageTitle = title ? `${title} · ${SITE.name}` : `${SITE.name} — Aspiring Aerospace & CS Engineer`;
 ---
 
@@ -29,6 +31,15 @@ const pageTitle = title ? `${title} · ${SITE.name}` : `${SITE.name} — Aspirin
       href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,600;12..96,700;12..96,800&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap"
       rel="stylesheet"
     />
+    {useModelViewer && (
+      <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.5.0/model-viewer.min.js" is:inline></script>
+    )}
+    {usePyScript && (
+      <>
+        <link rel="stylesheet" href="https://pyscript.net/releases/2024.1.1/core.css" />
+        <script type="module" src="https://pyscript.net/releases/2024.1.1/core.js" is:inline></script>
+      </>
+    )}
   </head>
   <body>
     <!-- Edit-preview toggle: hidden for visitors; appears only when ?edit is in the URL. -->

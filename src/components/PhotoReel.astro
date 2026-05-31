@@ -1,18 +1,24 @@
 ---
-// Slides come from a simple list for now. In Phase 2 these can be pulled from a
-// `photos` content collection so they're editable in the /admin CMS.
-interface Slide {
-  src?: string; // optional image path in /public/images
-  tag: string;
-  caption: string;
+import { getCollection } from 'astro:content';
+
+const photoEntries = await getCollection('photos');
+let slides = photoEntries
+  .sort((a, b) => (a.data.order ?? 0) - (b.data.order ?? 0))
+  .map(entry => ({
+    src: entry.data.image || undefined,
+    tag: entry.data.tag || '',
+    caption: entry.data.caption || '',
+  }));
+
+if (slides.length === 0) {
+  slides = [
+    { tag: 'AERONAUTICS', caption: 'Test-flying the upcycled RC glider' },
+    { tag: 'ROBOTICS', caption: 'Soldering the salvaged electronics' },
+    { tag: 'MARTIAL ARTS', caption: '2nd-degree black belt testing' },
+    { tag: 'MUSIC', caption: 'Baritone sax with the stage band' },
+    { tag: 'CAD & DESIGN', caption: 'First Fusion 360 part modeled from scratch' },
+  ];
 }
-const slides: Slide[] = [
-  { tag: 'AERONAUTICS', caption: 'Test-flying the upcycled RC glider' },
-  { tag: 'ROBOTICS', caption: 'Soldering the salvaged electronics' },
-  { tag: 'MARTIAL ARTS', caption: '2nd-degree black belt testing' },
-  { tag: 'MUSIC', caption: 'Baritone sax with the stage band' },
-  { tag: 'CAD & 3D', caption: 'First Fusion 360 part off the printer' },
-];
 ---
 
 <div class="reel" id="reel">

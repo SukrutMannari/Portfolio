@@ -2,6 +2,7 @@
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import { getCollection } from 'astro:content';
 import { CATEGORY_LABEL } from '../../data/site';
+import Gallery from '../../components/Gallery.astro';
 
 export async function getStaticPaths() {
   const projects = await getCollection('projects');
@@ -15,7 +16,7 @@ const statusLabel = data.status.replace('-', ' ').toUpperCase();
 const categoryLabel = CATEGORY_LABEL[data.category] ?? data.category;
 ---
 
-<BaseLayout title={data.title}>
+<BaseLayout title={data.title} useModelViewer={!!data.model}>
   <section>
     <a class="back" href="/engineering">← BACK TO ENGINEERING LAB</a>
     <div class="pdhead">
@@ -44,10 +45,7 @@ const categoryLabel = CATEGORY_LABEL[data.category] ?? data.category;
       <div class="pd">
         {
           data.model ? (
-            <>
-              <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.5.0/model-viewer.min.js" is:inline />
-              <model-viewer src={data.model} camera-controls auto-rotate ar shadow-intensity="1" />
-            </>
+            <model-viewer src={data.model} camera-controls auto-rotate ar shadow-intensity="1" />
           ) : null
         }
 
@@ -67,9 +65,7 @@ const categoryLabel = CATEGORY_LABEL[data.category] ?? data.category;
         <h2>Gallery</h2>
         {
           data.gallery && data.gallery.length > 0 ? (
-            <div class="gallery">
-              {data.gallery.map((g: string) => <img src={g} alt={data.title} loading="lazy" />)}
-            </div>
+            <Gallery images={data.gallery} alt={data.title} />
           ) : (
             <div class="gallery">
               <div class="ph">PHOTO</div>
