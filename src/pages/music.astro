@@ -1,0 +1,15 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Toolbox from '../components/Toolbox.astro';
+import { TOOLBOX } from '../data/site';
+const tb = TOOLBOX.music;
+---
+
+<BaseLayout title="Music">
+  <div class="page-head">
+    <div class="label">// MUSIC</div>
+    <h1 data-edit>I play the part nobody else does.</h1>
+    <p data-edit>Lead Baritone Saxophone — school Stage Band. I worked up the saxophone family from Alto to Tenor to Baritone, and as the only baritone I provide the bass that keeps everyone's foundation strong.</p>
+  </div>
+  <section style="padding-top:0;padding-bottom:0"><Toolbox label={tb.label} items={tb.items} /></section>
+</BaseLayout>

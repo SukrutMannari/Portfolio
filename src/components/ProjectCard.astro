@@ -1,0 +1,33 @@
+---
+import CategoryIcon from './CategoryIcon.astro';
+import { CATEGORY_LABEL } from '../data/site';
+
+interface Props {
+  project: any;
+  linked?: boolean; // wrap in <a> to detail page
+}
+const { project, linked = true } = Astro.props;
+const { data, slug } = project;
+const statusLabel = data.status.replace('-', ' ').toUpperCase();
+const tag = (CATEGORY_LABEL[data.category] ?? data.category).split(' ')[0].toUpperCase();
+const Tag = linked ? 'a' : 'div';
+const href = linked ? `/projects/${slug}` : undefined;
+---
+
+<Tag class="card" href={href}>
+  <div class="card-art"><CategoryIcon category={data.category} /></div>
+  <div class="card-body">
+    <div class="ptag">{tag}<span class={`pstat ${data.status}`}>{statusLabel}</span></div>
+    <h3>{data.title}</h3>
+    <p>{data.summary}</p>
+    {
+      data.skills?.length > 0 && (
+        <div class="chips">
+          {data.skills.slice(0, 3).map((s: string) => (
+            <span class="chip">{s}</span>
+          ))}
+        </div>
+      )
+    }
+  </div>
+</Tag>

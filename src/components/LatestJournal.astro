@@ -1,0 +1,32 @@
+---
+import { getCollection } from 'astro:content';
+
+const posts = (await getCollection('journal'))
+  .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf())
+  .slice(0, 3);
+
+const fmt = (d: Date) =>
+  d.toLocaleDateString('en-US', { month: 'short', year: 'numeric' }).toUpperCase();
+---
+
+<a class="seeall" href="/journal">VIEW ALL →</a>
+<div class="label">Latest — From the Journal</div>
+<div class="latest">
+  {
+    posts.map((p) => (
+      <a class="jcard" href={`/journal/${p.slug}`}>
+        <div class="jimg" style={p.data.cover ? `background-image:url(${p.data.cover})` : ''}>
+          {!p.data.cover && 'IMAGE · cover'}
+        </div>
+        <div class="jbody">
+          <div class="jmeta">
+            <span class={`jcat ${p.data.category}`}>{p.data.category}</span>
+            <span class="jdate">{fmt(p.data.date)}</span>
+          </div>
+          <h3>{p.data.title}</h3>
+          <p>{p.data.excerpt}</p>
+        </div>
+      </a>
+    ))
+  }
+</div>

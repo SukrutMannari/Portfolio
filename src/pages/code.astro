@@ -1,0 +1,17 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Toolbox from '../components/Toolbox.astro';
+import InteractiveCorner from '../components/InteractiveCorner.astro';
+import { TOOLBOX } from '../data/site';
+const tb = TOOLBOX.code;
+---
+
+<BaseLayout title="Code & Games">
+  <div class="page-head">
+    <div class="label">// CODE &amp; GAMES</div>
+    <h1 data-edit>Code &amp; Games</h1>
+    <p data-edit>Small programs and games I build to learn — and because they're fun to share. Play them right here; source is on GitHub. (Phase 2 adds live Python via PyScript and a per-game source view.)</p>
+  </div>
+  <section style="padding-top:0;padding-bottom:0"><Toolbox label={tb.label} items={tb.items} /></section>
+  <section><InteractiveCorner /></section>
+</BaseLayout>

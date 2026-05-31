@@ -1,0 +1,22 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Toolbox from '../components/Toolbox.astro';
+import { TOOLBOX } from '../data/site';
+const tb = TOOLBOX.academics;
+---
+
+<BaseLayout title="Academics & Awards">
+  <div class="page-head">
+    <div class="label">// ACADEMICS &amp; AWARDS</div>
+    <h1 data-edit>Holding myself to a high standard.</h1>
+    <p data-edit>Straight-A / A- student · Honor Roll every marking period · National Junior Honor Society inductee.</p>
+  </div>
+  <section style="padding-top:0;padding-bottom:0"><Toolbox label={tb.label} items={tb.items} /></section>
+  <section>
+    <div class="hl">
+      <div class="hlcard"><div class="k">ACCELERATED MATH</div><div class="v" data-edit>RSM Algebra Honors + Geometry · AoPS AMC 8 / MATHCOUNTS Advanced · Master Prep</div></div>
+      <div class="hlcard"><div class="k">COMPETITIONS</div><div class="v" data-edit>AMC 8 (Jan 2027) · JHMMC (Oct 2026) · Math Kangaroo · Noetic · Genius Cerebrum</div></div>
+      <div class="hlcard"><div class="k">RECOGNITION</div><div class="v" data-edit>Honor Roll every marking period · NJHS inductee</div></div>
+    </div>
+  </section>
+</BaseLayout>

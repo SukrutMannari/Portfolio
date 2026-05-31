@@ -1,0 +1,84 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { getCollection } from 'astro:content';
+import { CATEGORY_LABEL } from '../../data/site';
+
+export async function getStaticPaths() {
+  const projects = await getCollection('projects');
+  return projects.map((p) => ({ params: { slug: p.slug }, props: { project: p } }));
+}
+
+const { project } = Astro.props;
+const { data } = project;
+const { Content } = await project.render();
+const statusLabel = data.status.replace('-', ' ').toUpperCase();
+const categoryLabel = CATEGORY_LABEL[data.category] ?? data.category;
+---
+
+<BaseLayout title={data.title}>
+  <section>
+    <a class="back" href="/engineering">← BACK TO ENGINEERING LAB</a>
+    <div class="pdhead">
+      <div>
+        <div class="label" style="margin-bottom:10px">// {categoryLabel}</div>
+        <h1>{data.title}</h1>
+      </div>
+      <div class="status">● {statusLabel}</div>
+    </div>
+
+    <div class="pdgrid">
+      <aside class="specs">
+        <div class="sh">// SPECIFICATIONS</div>
+        <div class="specrow"><span class="sk">DISCIPLINE</span><span class="sv">{categoryLabel}</span></div>
+        <div class="specrow"><span class="sk">STATUS</span><span class="sv">{statusLabel}</span></div>
+        {
+          data.skills?.length > 0 && (
+            <div class="specrow"><span class="sk">SKILLS</span><span class="sv">{data.skills.length}</span></div>
+          )
+        }
+        {data.github && (
+          <div class="specrow"><span class="sk">SOURCE</span><span class="sv"><a href={data.github} style="color:var(--blue)">GitHub ↗</a></span></div>
+        )}
+      </aside>
+
+      <div class="pd">
+        {
+          data.model ? (
+            <>
+              <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.5.0/model-viewer.min.js" is:inline />
+              <model-viewer src={data.model} camera-controls auto-rotate ar shadow-intensity="1" />
+            </>
+          ) : null
+        }
+
+        <Content />
+
+        {
+          data.skills?.length > 0 && (
+            <>
+              <h2>Skills Demonstrated</h2>
+              <div class="skill-list">
+                {data.skills.map((s: string) => <span class="chip">{s}</span>)}
+              </div>
+            </>
+          )
+        }
+
+        <h2>Gallery</h2>
+        {
+          data.gallery && data.gallery.length > 0 ? (
+            <div class="gallery">
+              {data.gallery.map((g: string) => <img src={g} alt={data.title} loading="lazy" />)}
+            </div>
+          ) : (
+            <div class="gallery">
+              <div class="ph">PHOTO</div>
+              <div class="ph">PHOTO</div>
+              <div class="ph">PHOTO</div>
+            </div>
+          )
+        }
+      </div>
+    </div>
+  </section>
+</BaseLayout>

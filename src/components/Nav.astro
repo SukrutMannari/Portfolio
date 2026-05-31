@@ -1,0 +1,30 @@
+---
+import { SITE, NAV } from '../data/site';
+const path = Astro.url.pathname;
+const isActive = (href: string) =>
+  href === '/' ? path === '/' : path.startsWith(href);
+---
+
+<header>
+  <div class="nav">
+    <a class="brand" href="/">
+      <div class="logo">{SITE.initials}</div>
+      <div>
+        <div class="brand-name">{SITE.name.toUpperCase()}</div>
+        <div class="brand-sub">// {SITE.kicker}</div>
+      </div>
+    </a>
+    <nav class="tabs">
+      {
+        NAV.map((item) => (
+          <a
+            class:list={['tab', { active: isActive(item.href) && !item.resume, resume: item.resume }]}
+            href={item.href}
+          >
+            {item.label.toUpperCase()}
+          </a>
+        ))
+      }
+    </nav>
+  </div>
+</header>

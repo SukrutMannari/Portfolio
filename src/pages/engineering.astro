@@ -1,0 +1,75 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Toolbox from '../components/Toolbox.astro';
+import ProjectCard from '../components/ProjectCard.astro';
+import { getCollection } from 'astro:content';
+import { CATEGORIES, TOOLBOX } from '../data/site';
+
+const all = (await getCollection('projects')).sort((a, b) => a.data.order - b.data.order);
+const groups = CATEGORIES.map((c) => ({
+  ...c,
+  items: all.filter((p) => p.data.category === c.key),
+})).filter((g) => g.items.length > 0);
+const tb = TOOLBOX.engineering;
+---
+
+<BaseLayout title="Engineering Lab">
+  <div class="page-head">
+    <div class="label">// ENGINEERING LAB</div>
+    <h1 data-edit>Engineering Lab</h1>
+    <p data-edit>
+      Where I do most of my thinking — with my hands. My favorite builds cross disciplines: a
+      physical machine made smarter with code. Filter by discipline; new projects slot into a
+      category as I build them — including where I'm heading next.
+    </p>
+  </div>
+
+  <section style="padding-top:0;padding-bottom:0">
+    <Toolbox label={tb.label} items={tb.items} />
+  </section>
+
+  <div class="eng-wrap">
+    <aside class="sidebar" id="catbar">
+      <div class="sh">// FILTER BY DISCIPLINE</div>
+      <div class="catitem active" data-cat="all">All Projects <span class="cnt">{String(all.length).padStart(2, '0')}</span></div>
+      {
+        groups.map((g) => (
+          <div class="catitem" data-cat={g.key}>
+            {g.label} <span class="cnt">{String(g.items.length).padStart(2, '0')}</span>
+          </div>
+        ))
+      }
+    </aside>
+
+    <div id="groups">
+      {
+        groups.map((g) => (
+          <div class="group" data-cat={g.key}>
+            <div class="group-title">
+              {g.label}
+              {g.key === 'ai' && ' — where I\'m heading'}
+            </div>
+            <div class="grid3">
+              {g.items.map((p) => (
+                <ProjectCard project={p} linked={p.data.status !== 'planned'} />
+              ))}
+            </div>
+          </div>
+        ))
+      }
+    </div>
+  </div>
+</BaseLayout>
+
+<script>
+  document.querySelectorAll<HTMLElement>('.catitem').forEach((c) =>
+    c.addEventListener('click', () => {
+      const cat = c.getAttribute('data-cat');
+      document.querySelectorAll('.catitem').forEach((x) => x.classList.remove('active'));
+      c.classList.add('active');
+      document.querySelectorAll<HTMLElement>('#groups .group').forEach((g) => {
+        g.style.display = cat === 'all' || g.getAttribute('data-cat') === cat ? 'block' : 'none';
+      });
+    })
+  );
+</script>

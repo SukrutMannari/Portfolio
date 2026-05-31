@@ -1,0 +1,25 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Toolbox from '../components/Toolbox.astro';
+import { TOOLBOX } from '../data/site';
+const tb = TOOLBOX.leadership;
+---
+
+<BaseLayout title="Leadership & Service">
+  <div class="page-head">
+    <div class="label">// LEADERSHIP &amp; SERVICE</div>
+    <h1 data-edit>Leadership is responsibility you choose.</h1>
+    <p data-edit>From mentoring younger students to serving at the community library, I look for ways to step up.</p>
+  </div>
+  <section style="padding-top:0;padding-bottom:0"><Toolbox label={tb.label} items={tb.items} /></section>
+  <section>
+    <div class="hl">
+      <div class="hlcard"><div class="k">TAEKWONDO</div><div class="v" data-edit>2nd-degree black belt &amp; mentor · Leadership Award for helping students</div></div>
+      <div class="hlcard"><div class="k">STAGE BAND</div><div class="v" data-edit>Only baritone saxophone — the band's bass foundation</div></div>
+      <div class="hlcard"><div class="k">CAMP DORM LEAD</div><div class="v" data-edit>Chosen to help counselors manage kids and activities</div></div>
+      <div class="hlcard"><div class="k">SCHOOL STORE</div><div class="v" data-edit>Cashier — sales and confident communication</div></div>
+      <div class="hlcard"><div class="k">TREPS</div><div class="v" data-edit>Student entrepreneur — own inventory &amp; pricing</div></div>
+      <div class="hlcard"><div class="k">SERVICE</div><div class="v" data-edit>27+ library hours · Wall of Kindness · planned e-waste drive</div></div>
+    </div>
+  </section>
+</BaseLayout>

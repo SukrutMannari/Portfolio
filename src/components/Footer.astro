@@ -1,0 +1,11 @@
+---
+import { SITE } from '../data/site';
+const year = new Date().getFullYear();
+---
+
+<footer>
+  <div class="foot">
+    <span>© {year} {SITE.name.toUpperCase()}</span>
+    <span>{SITE.kicker} · BUILT WITH ASTRO</span>
+  </div>
+</footer>

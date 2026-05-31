@@ -1,0 +1,3 @@
+Drop the one-page resume here as `resume.pdf` (i.e. public/resume.pdf).
+The nav "Résumé ↓" link and the hero "VIEW RÉSUMÉ" button both point to /resume.pdf.
+Until the PDF exists, those links will 404 — add the file to make them work.

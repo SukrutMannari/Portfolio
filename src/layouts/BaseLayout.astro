@@ -1,0 +1,68 @@
+---
+import '../styles/global.css';
+import Nav from '../components/Nav.astro';
+import Footer from '../components/Footer.astro';
+import { SITE } from '../data/site';
+
+interface Props {
+  title?: string;
+  description?: string;
+}
+const { title, description = SITE.description } = Astro.props;
+const pageTitle = title ? `${title} · ${SITE.name}` : `${SITE.name} — Aspiring Aerospace & CS Engineer`;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{pageTitle}</title>
+    <meta name="description" content={description} />
+    <meta property="og:title" content={pageTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:type" content="website" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,600;12..96,700;12..96,800&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <!-- Edit-preview toggle: hidden for visitors; appears only when ?edit is in the URL. -->
+    <div class="edit-toggle" id="editBtn" title="Toggle edit-preview mode">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+        ><path d="M12 20h9" /><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z" /></svg
+      >
+    </div>
+
+    <div class="wrap">
+      <Nav />
+      <main>
+        <slot />
+      </main>
+      <Footer />
+    </div>
+
+    <script is:inline>
+      // Edit-preview is a private authoring aid, not a visitor feature.
+      // Visit any page with ?edit appended (e.g. /about?edit) to enable it.
+      (function () {
+        const btn = document.getElementById('editBtn');
+        if (!btn) return;
+        if (new URLSearchParams(location.search).has('edit')) {
+          btn.classList.add('available');
+          btn.addEventListener('click', () => {
+            const on = document.body.classList.toggle('editing');
+            btn.classList.toggle('on', on);
+            document.querySelectorAll('[data-edit]').forEach((e) =>
+              e.setAttribute('contenteditable', String(on))
+            );
+          });
+        }
+      })();
+    </script>
+  </body>
+</html>

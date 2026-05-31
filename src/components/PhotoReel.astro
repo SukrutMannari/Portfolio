@@ -1,0 +1,68 @@
+---
+// Slides come from a simple list for now. In Phase 2 these can be pulled from a
+// `photos` content collection so they're editable in the /admin CMS.
+interface Slide {
+  src?: string; // optional image path in /public/images
+  tag: string;
+  caption: string;
+}
+const slides: Slide[] = [
+  { tag: 'AERONAUTICS', caption: 'Test-flying the upcycled RC glider' },
+  { tag: 'ROBOTICS', caption: 'Soldering the salvaged electronics' },
+  { tag: 'MARTIAL ARTS', caption: '2nd-degree black belt testing' },
+  { tag: 'MUSIC', caption: 'Baritone sax with the stage band' },
+  { tag: 'CAD & 3D', caption: 'First Fusion 360 part off the printer' },
+];
+---
+
+<div class="reel" id="reel">
+  <div class="reel-track" id="reelTrack">
+    {
+      slides.map((s) => (
+        <div class="slide">
+          {s.src ? (
+            <img src={s.src} alt={s.caption} loading="lazy" />
+          ) : (
+            <svg class="ph-icon" width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="#1C6FB5" stroke-width="1.5">
+              <rect x="3" y="3" width="18" height="18" rx="2" />
+              <circle cx="8.5" cy="8.5" r="1.5" />
+              <path d="m21 15-5-5L5 21" />
+            </svg>
+          )}
+          <div class="cap">
+            <div class="ct" data-edit>PHOTO · {s.tag}</div>
+            <div class="cd" data-edit>{s.caption}</div>
+          </div>
+        </div>
+      ))
+    }
+  </div>
+  <div class="reel-nav prev" id="reelPrev">‹</div>
+  <div class="reel-nav next" id="reelNext">›</div>
+  <div class="reel-dots" id="reelDots"></div>
+</div>
+
+<script>
+  const track = document.getElementById('reelTrack');
+  if (track) {
+    const slides = track.children.length;
+    let i = 0;
+    let timer: any;
+    const dots = document.getElementById('reelDots')!;
+    for (let d = 0; d < slides; d++) {
+      const el = document.createElement('div');
+      el.className = 'dot' + (d === 0 ? ' on' : '');
+      el.addEventListener('click', () => go(d));
+      dots.appendChild(el);
+    }
+    function render() {
+      track!.style.transform = 'translateX(-' + i * 100 + '%)';
+      [...dots.children].forEach((x, k) => x.classList.toggle('on', k === i));
+    }
+    function go(n: number) { i = (n + slides) % slides; render(); reset(); }
+    function reset() { clearInterval(timer); timer = setInterval(() => go(i + 1), 3800); }
+    document.getElementById('reelNext')!.addEventListener('click', () => go(i + 1));
+    document.getElementById('reelPrev')!.addEventListener('click', () => go(i - 1));
+    reset();
+  }
+</script>

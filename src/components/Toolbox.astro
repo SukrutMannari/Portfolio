@@ -1,0 +1,12 @@
+---
+interface Props {
+  label: string;
+  items: string[];
+}
+const { label, items } = Astro.props;
+---
+
+<div class="ribbon-box">
+  <span class="rk">{label} //</span>
+  {items.map((t) => <span class="ribbon-tool">{t}</span>)}
+</div>

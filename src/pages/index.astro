@@ -1,0 +1,104 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PhotoReel from '../components/PhotoReel.astro';
+import LatestJournal from '../components/LatestJournal.astro';
+import InteractiveCorner from '../components/InteractiveCorner.astro';
+import ProjectCard from '../components/ProjectCard.astro';
+import { getCollection } from 'astro:content';
+
+const featured = (await getCollection('projects'))
+  .filter((p) => p.data.featured)
+  .sort((a, b) => a.data.order - b.data.order)
+  .slice(0, 4);
+---
+
+<BaseLayout>
+  <!-- HERO -->
+  <section class="hero">
+    <div>
+      <div class="hero-tag" data-edit>// DESIGN · BUILD · AUTOMATE</div>
+      <h1 data-edit>Aspiring <span class="accent">Aerospace</span> &amp; Computer Science Engineer.</h1>
+      <p class="hero-lead" data-edit>
+        I design, build, and break things to learn how they work — from Bluetooth robots and a
+        salvaged RC glider to 3D-printed parts and smart-home automation.
+      </p>
+      <div class="maker-quote" data-edit>
+        "I take things apart to understand them, then build them back better."
+      </div>
+      <div class="cta-row">
+        <a class="btn primary" href="/engineering">EXPLORE PROJECTS →</a>
+        <a class="btn" href="/resume.pdf">VIEW RÉSUMÉ</a>
+      </div>
+    </div>
+    <div class="hero-art">
+      <div class="art-frame"></div>
+      <svg viewBox="0 0 300 300" fill="none" stroke="#1C6FB5" stroke-width="1.4">
+        <path d="M150 40 L185 150 L150 175 L115 150 Z" />
+        <path d="M150 40 L150 175" stroke="rgba(28,78,130,.35)" stroke-dasharray="4 4" />
+        <path d="M115 150 L40 205 L150 175 L260 205 L185 150" />
+        <path d="M150 175 L150 250" /><path d="M120 250 L180 250" />
+        <path d="M150 250 L130 235 M150 250 L170 235" stroke="#E8590C" />
+        <circle cx="150" cy="40" r="4" fill="#E8590C" stroke="none" />
+        <path d="M40 205 L40 225 M260 205 L260 225" stroke="rgba(28,78,130,.35)" />
+        <path d="M40 220 L260 220" stroke="rgba(28,78,130,.35)" stroke-dasharray="3 3" />
+        <text x="150" y="237" fill="#5C6B7C" font-size="9" font-family="monospace" text-anchor="middle">220mm</text>
+      </svg>
+    </div>
+  </section>
+
+  <!-- PHOTO REEL -->
+  <section style="padding-top:30px;padding-bottom:0">
+    <div class="label">In the Workshop</div>
+    <PhotoReel />
+  </section>
+
+  <!-- STATS -->
+  <section style="padding-top:48px">
+    <div class="stats">
+      <div class="stat"><div class="num">100%</div><div class="cap" data-edit>HONOR ROLL<br />EVERY MARKING PERIOD</div></div>
+      <div class="stat"><div class="num">2nd</div><div class="cap" data-edit>DEGREE BLACK BELT<br />TAEKWONDO</div></div>
+      <div class="stat"><div class="num">NJHS</div><div class="cap" data-edit>NATIONAL JUNIOR<br />HONOR SOCIETY</div></div>
+      <div class="stat"><div class="num">4+</div><div class="cap" data-edit>MAKER BUILDS<br />ROBOTICS &amp; AERO</div></div>
+      <div class="stat"><div class="num">27+</div><div class="cap" data-edit>SERVICE HOURS<br />COMMUNITY LIBRARY</div></div>
+    </div>
+  </section>
+
+  <!-- LATEST JOURNAL -->
+  <section style="padding-top:8px"><LatestJournal /></section>
+
+  <!-- INTERACTIVE CORNER -->
+  <section><InteractiveCorner /></section>
+
+  <!-- VALUES -->
+  <section>
+    <div class="label">Core Values</div>
+    <div class="values">
+      <div class="value"><div class="vnum">01</div><h3 data-edit>Accountability</h3><p data-edit>If a younger student makes a mistake I didn't catch, that's on me.</p></div>
+      <div class="value"><div class="vnum">02</div><h3 data-edit>Perseverance</h3><p data-edit>Years of training for each black belt. Hard things take time — I don't quit.</p></div>
+      <div class="value"><div class="vnum">03</div><h3 data-edit>Technical Curiosity</h3><p data-edit>I take things apart to understand them, then build them back better.</p></div>
+      <div class="value"><div class="vnum">04</div><h3 data-edit>Community Leadership</h3><p data-edit>I want to give back the same welcome I was given.</p></div>
+    </div>
+  </section>
+
+  <!-- FEATURED PROJECTS -->
+  <section style="padding-top:0">
+    <a class="seeall" href="/engineering">ALL PROJECTS →</a>
+    <div class="label">Engineering Lab — Featured</div>
+    <div class="grid4">
+      {featured.map((p) => <ProjectCard project={p} />)}
+    </div>
+  </section>
+
+  <!-- AT A GLANCE -->
+  <section style="padding-top:0">
+    <div class="label">At a Glance</div>
+    <div class="hl">
+      <div class="hlcard"><div class="k">ACCELERATED MATH</div><div class="v" data-edit>RSM Algebra Honors + Geometry · AoPS AMC 8 / MATHCOUNTS Advanced</div></div>
+      <div class="hlcard"><div class="k">COMPETITIONS</div><div class="v" data-edit>AMC 8 · Joe Holbrook (JHMMC) · Math Kangaroo · Noetic</div></div>
+      <div class="hlcard"><div class="k">MUSIC</div><div class="v" data-edit>Lead Baritone Saxophone — Stage Band</div></div>
+      <div class="hlcard"><div class="k">LEADERSHIP</div><div class="v" data-edit>Taekwondo mentor · Camp Dorm Lead · TREPS entrepreneur</div></div>
+      <div class="hlcard"><div class="k">SERVICE</div><div class="v" data-edit>Community library · Wall of Kindness · planned e-waste drive</div></div>
+      <div class="hlcard"><div class="k">BUILDING TOWARD</div><div class="v" data-edit>Autonomous systems · FIRST Lego League club · home automation</div></div>
+    </div>
+  </section>
+</BaseLayout>
