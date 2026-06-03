@@ -15,10 +15,20 @@ const fmt = (d: Date) => d.toLocaleDateString('en-US', { month: 'short', year: '
     <p>What I'm building, playing, and learning — as it happens. The latest is always at the top.</p>
   </div>
   <section style="padding-top:24px">
-    <div class="latest" style="grid-template-columns:repeat(3,1fr)">
+    <div class="filter-bar">
+      <button class="filter-pill active" data-filter="all">All</button>
+      <button class="filter-pill" data-filter="engineering">Engineering</button>
+      <button class="filter-pill" data-filter="music">Music</button>
+      <button class="filter-pill" data-filter="academics">Academics</button>
+      <button class="filter-pill" data-filter="service">Service</button>
+      <button class="filter-pill" data-filter="competition">Competition</button>
+      <button class="filter-pill" data-filter="other">Other</button>
+    </div>
+
+    <div class="latest" id="journal-grid" style="grid-template-columns:repeat(3,1fr)">
       {
         posts.map((p) => (
-          <a class="jcard" href={`/journal/${p.slug}`}>
+          <a class="jcard" href={`/journal/${p.slug}`} data-category={p.data.category}>
             <div class="jimg" style={p.data.cover ? `background-image:url(${p.data.cover})` : ''}>
               {!p.data.cover && 'IMAGE · cover'}
             </div>
@@ -36,3 +46,42 @@ const fmt = (d: Date) => d.toLocaleDateString('en-US', { month: 'short', year: '
     </div>
   </section>
 </BaseLayout>
+
+<style>
+  .filter-bar {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 24px;
+    flex-wrap: wrap;
+  }
+  .filter-pill {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.5px;
+    padding: 6px 14px;
+    border: 1px solid var(--line);
+    background: var(--paper-2);
+    color: var(--ink-dim);
+    border-radius: 3px;
+    cursor: pointer;
+    transition: .15s;
+  }
+  .filter-pill:hover { border-color: var(--blue); color: var(--blue); }
+  .filter-pill.active { background: var(--blue); border-color: var(--blue); color: #fff; }
+</style>
+
+<script>
+  const pills = document.querySelectorAll<HTMLElement>('.filter-pill');
+  const cards = document.querySelectorAll<HTMLElement>('#journal-grid .jcard');
+
+  pills.forEach(pill => {
+    pill.addEventListener('click', () => {
+      pills.forEach(p => p.classList.remove('active'));
+      pill.classList.add('active');
+      const filter = pill.getAttribute('data-filter')!;
+      cards.forEach(card => {
+        card.style.display = (filter === 'all' || card.getAttribute('data-category') === filter) ? '' : 'none';
+      });
+    });
+  });
+</script>

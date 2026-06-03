@@ -6,10 +6,16 @@ import InteractiveCorner from '../components/InteractiveCorner.astro';
 import ProjectCard from '../components/ProjectCard.astro';
 import { getCollection } from 'astro:content';
 
-const featured = (await getCollection('projects'))
+const allProjects = await getCollection('projects');
+const featured = allProjects
   .filter((p) => p.data.featured)
   .sort((a, b) => a.data.order - b.data.order)
   .slice(0, 4);
+
+const completedBuilds = allProjects.filter((p) => p.data.status === 'complete').length;
+
+const serviceEntries = await getCollection('service');
+const totalServiceHours = serviceEntries.reduce((sum, e) => sum + (e.data.hours ?? 0), 0);
 ---
 
 <BaseLayout>
@@ -58,8 +64,8 @@ const featured = (await getCollection('projects'))
       <div class="stat"><div class="num">100%</div><div class="cap" data-edit>HONOR ROLL<br />EVERY MARKING PERIOD</div></div>
       <div class="stat"><div class="num">2nd</div><div class="cap" data-edit>DEGREE BLACK BELT<br />TAEKWONDO</div></div>
       <div class="stat"><div class="num">NJHS</div><div class="cap" data-edit>NATIONAL JUNIOR<br />HONOR SOCIETY</div></div>
-      <div class="stat"><div class="num">4+</div><div class="cap" data-edit>MAKER BUILDS<br />ROBOTICS &amp; AERO</div></div>
-      <div class="stat"><div class="num">27+</div><div class="cap" data-edit>SERVICE HOURS<br />COMMUNITY LIBRARY</div></div>
+      <div class="stat"><div class="num">{completedBuilds}</div><div class="cap" data-edit>MAKER BUILDS<br />ROBOTICS &amp; AERO</div></div>
+      <div class="stat"><div class="num">{totalServiceHours.toFixed(1)}</div><div class="cap" data-edit>SERVICE HOURS<br />COMMUNITY LIBRARY</div></div>
     </div>
   </section>
 

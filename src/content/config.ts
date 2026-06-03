@@ -54,4 +54,40 @@ const games = defineCollection({
   }),
 });
 
-export const collections = { projects, journal, photos, games };
+const service = defineCollection({
+  type: 'content',
+  schema: z.object({
+    title: z.string(),
+    date: z.coerce.date(),
+    hours: z.number().optional(),
+    role: z.string().optional(),
+    category: z.enum(['library', 'njhs', 'school', 'community', 'other']).default('other'),
+    notes: z.string().optional(),
+  }),
+});
+
+const taekwondo = defineCollection({
+  type: 'content',
+  schema: z.object({
+    title: z.string(),
+    date: z.coerce.date(),
+    eventType: z.enum(['grading', 'competition', 'teaching', 'training', 'other']),
+    notes: z.string().optional(),
+  }),
+});
+
+const performances = defineCollection({
+  type: 'content',
+  schema: z.object({
+    title: z.string(),
+    date: z.coerce.date(),
+    venue: z.string().optional(),
+    instrument: z.string().default('Baritone Saxophone'),
+    role: z.string().optional(),
+    performanceType: z.enum(['band', 'solo', 'competition', 'other']).default('band'),
+    notes: z.string().optional(),
+    cover: z.string().optional(),
+  }),
+});
+
+export const collections = { projects, journal, photos, games, service, taekwondo, performances };

@@ -1,23 +1,49 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Toolbox from '../components/Toolbox.astro';
-import { TOOLBOX } from '../data/site';
+import { getCollection } from 'astro:content';
+import { TOOLBOX, LEADERSHIP_ROLES } from '../data/site';
+
 const tb = TOOLBOX.leadership;
 
-const tkdPhotos = [
-  { src: '/photos/Taekwondo1.jpeg',  caption: 'Receiving the first dojo trophy' },
-  { src: '/photos/Taekwondo2.jpeg',  caption: 'Board-break kick during belt test' },
-  { src: '/photos/Taekwondo4.jpeg',  caption: 'Proud moment with the gold cup' },
-  { src: '/photos/Taekwondo5.jpeg',  caption: 'Another kick mid-test' },
-  { src: '/photos/Taekwondo6.jpeg',  caption: 'Breaking technique, heads up focus' },
-  { src: '/photos/Taekwondo7.jpeg',  caption: 'Family photo after winning the Leadership Award' },
-  { src: '/photos/Taekwondo8.jpeg',  caption: 'Belt certificate ceremony at Fair Lawn TKD' },
-  { src: '/photos/Taekwondo9.jpeg',  caption: 'Receiving the Leadership Award trophy' },
-  { src: '/photos/Taekwondo10.jpeg', caption: 'Belt promotion celebration with family and Master' },
-  { src: '/photos/Taekwondo11.jpeg', caption: 'Early days — green belt at the first school in India' },
-  { src: '/photos/Taekwondo12.jpeg', caption: 'First belt test as a young student' },
-  { src: '/photos/Taekwondo13.jpeg', caption: 'First belt certificate, with instructors' },
-];
+// Live data from collections
+const serviceEntries = await getCollection('service');
+const tkdEntries = await getCollection('taekwondo');
+
+const totalHours = serviceEntries.reduce((sum, e) => sum + (e.data.hours ?? 0), 0);
+const totalSessions = serviceEntries.length;
+const totalTkd = tkdEntries.length;
+
+// Merge and sort activity log reverse-chronologically
+const serviceItems = serviceEntries.map(e => ({
+  type: 'service',
+  date: e.data.date,
+  title: e.data.title,
+  tag: e.data.category,
+  hours: e.data.hours,
+  notes: e.data.notes,
+}));
+const tkdItems = tkdEntries.map(e => ({
+  type: 'taekwondo',
+  date: e.data.date,
+  title: e.data.title,
+  tag: e.data.eventType,
+  hours: undefined,
+  notes: e.data.notes,
+}));
+const allActivity = [...serviceItems, ...tkdItems].sort(
+  (a, b) => b.date.valueOf() - a.date.valueOf()
+);
+
+const fmt = (d: Date) => d.toLocaleDateString('en-US', { month: 'short', year: 'numeric' }).toUpperCase();
+
+// Status → pstat class mapping
+function statusClass(status: string) {
+  if (status === 'Active') return 'complete';
+  if (status === 'In Progress') return 'in-progress';
+  if (status === 'Planned') return 'planned';
+  return 'alumni';
+}
 ---
 
 <BaseLayout title="Leadership & Service">
@@ -26,26 +52,72 @@ const tkdPhotos = [
     <h1 data-edit>Leadership is responsibility you choose.</h1>
     <p data-edit>From mentoring younger students to serving at the community library, I look for ways to step up.</p>
   </div>
+
   <section style="padding-top:0;padding-bottom:0"><Toolbox label={tb.label} items={tb.items} /></section>
-  <section>
-    <div class="hl">
-      <div class="hlcard"><div class="k">TAEKWONDO</div><div class="v" data-edit>2nd-degree black belt &amp; mentor · Leadership Award for helping students</div></div>
-      <div class="hlcard"><div class="k">STAGE BAND</div><div class="v" data-edit>Only baritone saxophone — the band's bass foundation</div></div>
-      <div class="hlcard"><div class="k">CAMP DORM LEAD</div><div class="v" data-edit>Chosen to help counselors manage kids and activities</div></div>
-      <div class="hlcard"><div class="k">SCHOOL STORE</div><div class="v" data-edit>Cashier — sales and confident communication</div></div>
-      <div class="hlcard"><div class="k">TREPS</div><div class="v" data-edit>Student entrepreneur — own inventory &amp; pricing</div></div>
-      <div class="hlcard"><div class="k">SERVICE</div><div class="v" data-edit>27+ library hours · Wall of Kindness · planned e-waste drive</div></div>
+
+  <!-- Zone 1: Stat strip (live-calculated) -->
+  <section style="padding-top:28px;padding-bottom:0">
+    <div class="stats">
+      <div class="stat">
+        <div class="num">{totalHours.toFixed(1)}</div>
+        <div class="cap">SERVICE HOURS<br />COMMUNITY LIBRARY &amp; NJHS</div>
+      </div>
+      <div class="stat">
+        <div class="num">{String(totalSessions).padStart(2,'0')}</div>
+        <div class="cap">SERVICE<br />SESSIONS LOGGED</div>
+      </div>
+      <div class="stat">
+        <div class="num">{String(totalTkd).padStart(2,'0')}</div>
+        <div class="cap">TAEKWONDO<br />EVENTS LOGGED</div>
+      </div>
+      <div class="stat">
+        <div class="num">2nd</div>
+        <div class="cap">DEGREE<br />BLACK BELT</div>
+      </div>
     </div>
   </section>
 
+  <!-- Zone 2: Role cards -->
+  <section style="padding-bottom:0">
+    <div class="label">// ROLES &amp; INITIATIVES</div>
+    <div class="grid3">
+      {LEADERSHIP_ROLES.map(r => (
+        <div class="card">
+          <div class="card-body">
+            <div class="ptag">
+              {r.title}
+              <span class={`pstat ${statusClass(r.status)}`}>{r.status.toUpperCase()}</span>
+            </div>
+            <h3>{r.subtitle}</h3>
+            <p>{r.description}</p>
+          </div>
+        </div>
+      ))}
+    </div>
+  </section>
+
+  <!-- Zone 3: Activity log with filter -->
   <section>
-    <div class="label">Taekwondo Journey</div>
-    <p data-edit style="max-width:680px;margin-bottom:28px">Six years of training — from a white belt in India to a 2nd-degree black belt and Leadership Award winner at Fair Lawn Taekwondo.</p>
-    <div class="tkd-grid">
-      {tkdPhotos.map((p) => (
-        <div class="tkd-card">
-          <img src={p.src} alt={p.caption} loading="lazy" />
-          <div class="tkd-cap">{p.caption}</div>
+    <div class="label">// ACTIVITY LOG</div>
+    <div class="filter-bar">
+      <button class="filter-pill active" data-filter="all">All</button>
+      <button class="filter-pill" data-filter="service">Service</button>
+      <button class="filter-pill" data-filter="taekwondo">Taekwondo</button>
+    </div>
+    <div class="grid3" id="activity-grid">
+      {allActivity.map(item => (
+        <div class="card" data-type={item.type}>
+          <div class="card-body">
+            <div class="ptag">
+              <span class="chip">{item.tag.toUpperCase()}</span>
+              <span style="font-family:var(--font-mono);font-size:10px;color:var(--ink-dim)">{fmt(item.date)}</span>
+            </div>
+            <h3>{item.title}</h3>
+            {item.hours !== undefined && (
+              <p style="font-family:var(--font-mono);font-size:11px;color:var(--orange);margin-bottom:6px">{item.hours} hrs</p>
+            )}
+            {item.notes && <p>{item.notes}</p>}
+          </div>
         </div>
       ))}
     </div>
@@ -53,33 +125,40 @@ const tkdPhotos = [
 </BaseLayout>
 
 <style>
-  .tkd-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-    gap: 16px;
+  .filter-bar {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
   }
-  .tkd-card {
-    border-radius: 8px;
-    overflow: hidden;
-    border: 1.5px solid var(--grid-line);
-    background: var(--paper);
-    transition: box-shadow .2s, transform .2s;
-  }
-  .tkd-card:hover {
-    box-shadow: 0 6px 24px rgba(28,111,181,.13);
-    transform: translateY(-2px);
-  }
-  .tkd-card img {
-    width: 100%;
-    aspect-ratio: 4/3;
-    object-fit: cover;
-    display: block;
-  }
-  .tkd-cap {
-    padding: 10px 12px;
-    font-size: 12px;
-    color: var(--ink-dim);
+  .filter-pill {
     font-family: var(--font-mono);
-    letter-spacing: .03em;
+    font-size: 11px;
+    letter-spacing: 0.5px;
+    padding: 6px 14px;
+    border: 1px solid var(--line);
+    background: var(--paper-2);
+    color: var(--ink-dim);
+    border-radius: 3px;
+    cursor: pointer;
+    transition: .15s;
   }
+  .filter-pill:hover { border-color: var(--blue); color: var(--blue); }
+  .filter-pill.active { background: var(--blue); border-color: var(--blue); color: #fff; }
 </style>
+
+<script>
+  const pills = document.querySelectorAll<HTMLElement>('.filter-pill');
+  const cards = document.querySelectorAll<HTMLElement>('#activity-grid .card');
+
+  pills.forEach(pill => {
+    pill.addEventListener('click', () => {
+      pills.forEach(p => p.classList.remove('active'));
+      pill.classList.add('active');
+      const filter = pill.getAttribute('data-filter')!;
+      cards.forEach(card => {
+        card.style.display = (filter === 'all' || card.getAttribute('data-type') === filter) ? '' : 'none';
+      });
+    });
+  });
+</script>

@@ -1,12 +1,15 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Toolbox from '../components/Toolbox.astro';
-import { TOOLBOX } from '../data/site';
+import { getCollection } from 'astro:content';
+import { TOOLBOX, MUSIC_PROGRESSION } from '../data/site';
+
 const tb = TOOLBOX.music;
 
-const musicPhotos = [
-  { src: '/photos/Taekwondo9.jpeg', caption: '' }, // placeholder — user to replace
-];
+const performances = await getCollection('performances');
+const sortedPerformances = performances.sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+
+const fmt = (d: Date) => d.toLocaleDateString('en-US', { month: 'short', year: 'numeric' }).toUpperCase();
 ---
 
 <BaseLayout title="Music">
@@ -15,5 +18,101 @@ const musicPhotos = [
     <h1 data-edit>I play the part nobody else does.</h1>
     <p data-edit>Lead Baritone Saxophone — school Stage Band. I worked up the saxophone family from Alto to Tenor to Baritone, and as the only baritone I provide the bass that keeps everyone's foundation strong.</p>
   </div>
-  <section style="padding-top:0;padding-bottom:0"><Toolbox label={tb.label} items={tb.items} /></section>
+
+  <section style="padding-top:0;padding-bottom:0">
+    <Toolbox label={tb.label} items={tb.items} />
+  </section>
+
+  <!-- Zone 1: Timeline -->
+  <section style="padding-bottom:0">
+    <div class="label">// INSTRUMENT PROGRESSION</div>
+    <div class="timeline">
+      {MUSIC_PROGRESSION.map((step, idx) => (
+        <div class="timeline-step">
+          <div class={`tnode ${idx === MUSIC_PROGRESSION.length - 1 ? 'active' : ''}`}>
+            {idx + 1}
+          </div>
+          <div>
+            <div class="tstep-label">{step.instrument}</div>
+            <div class="tstep-period">{step.period}</div>
+            <div class="tstep-note">{step.note}</div>
+          </div>
+        </div>
+      ))}
+    </div>
+  </section>
+
+  <!-- Zone 2: Performances -->
+  <section>
+    <div class="label">// PERFORMANCE LOG</div>
+    <div class="filter-bar">
+      <button class="filter-pill active" data-filter="all">All</button>
+      <button class="filter-pill" data-filter="band">Band</button>
+      <button class="filter-pill" data-filter="solo">Solo</button>
+      <button class="filter-pill" data-filter="competition">Competition</button>
+      <button class="filter-pill" data-filter="other">Other</button>
+    </div>
+
+    <div class="grid3" id="performances-grid">
+      {sortedPerformances.map(p => (
+        <div class="card" data-type={p.data.performanceType}>
+          <div class="card-body">
+            <div class="ptag">
+              <span class="chip">{p.data.performanceType.toUpperCase()}</span>
+              <span style="font-family:var(--font-mono);font-size:10px;color:var(--ink-dim)">{fmt(p.data.date)}</span>
+            </div>
+            <h3>{p.data.title}</h3>
+            <p style="font-family:var(--font-mono);font-size:11px;color:var(--blue);margin-bottom:6px">
+              {p.data.instrument} {p.data.role ? `• ${p.data.role}` : ''}
+            </p>
+            {p.data.venue && (
+              <p style="font-size:12px;color:var(--ink-dim);margin-bottom:6px">
+                📍 {p.data.venue}
+              </p>
+            )}
+            {p.data.notes && <p>{p.data.notes}</p>}
+          </div>
+        </div>
+      ))}
+    </div>
+  </section>
 </BaseLayout>
+
+<style>
+  .filter-bar {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+  }
+  .filter-pill {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.5px;
+    padding: 6px 14px;
+    border: 1px solid var(--line);
+    background: var(--paper-2);
+    color: var(--ink-dim);
+    border-radius: 3px;
+    cursor: pointer;
+    transition: .15s;
+  }
+  .filter-pill:hover { border-color: var(--blue); color: var(--blue); }
+  .filter-pill.active { background: var(--blue); border-color: var(--blue); color: #fff; }
+</style>
+
+<script>
+  const pills = document.querySelectorAll<HTMLElement>('.filter-pill');
+  const cards = document.querySelectorAll<HTMLElement>('#performances-grid .card');
+
+  pills.forEach(pill => {
+    pill.addEventListener('click', () => {
+      pills.forEach(p => p.classList.remove('active'));
+      pill.classList.add('active');
+      const filter = pill.getAttribute('data-filter')!;
+      cards.forEach(card => {
+        card.style.display = (filter === 'all' || card.getAttribute('data-type') === filter) ? '' : 'none';
+      });
+    });
+  });
+</script>
