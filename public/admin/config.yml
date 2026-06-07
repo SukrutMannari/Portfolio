@@ -1,11 +1,10 @@
 backend:
   name: github
-  # Replace with your actual GitHub username and repository name
-  repo: sukrut-mannari/sukrut-portfolio
+  repo: SukrutMannari/Portfolio
   branch: main
-  # Local host for local development. Change this to your production domain (e.g., https://sukrutmannari.com) when deploying.
-  base_url: http://localhost:4321
   auth_endpoint: api/auth
+  # base_url intentionally omitted — Decap CMS defaults to the current
+  # origin, so this works on both http://localhost:4321 and the live domain.
 
 media_folder: "public/images"
 public_folder: "/images"

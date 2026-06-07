@@ -18,8 +18,14 @@ const isActive = (href: string) =>
       {
         NAV.map((item) => (
           <a
-            class:list={['tab', { active: isActive(item.href) && !item.resume, resume: item.resume }]}
+            class:list={[
+              'tab',
+              { active: isActive(item.href) && !item.resume && !item.admin },
+              { resume: item.resume },
+              { admin: item.admin },
+            ]}
             href={item.href}
+            title={item.admin ? 'Open content editor' : undefined}
           >
             {item.label.toUpperCase()}
           </a>
@@ -28,3 +34,19 @@ const isActive = (href: string) =>
     </nav>
   </div>
 </header>
+
+<style>
+  .tab.admin {
+    color: var(--ink-dim);
+    border: 1px dashed var(--line-soft);
+    font-size: 11px;
+    opacity: 0.7;
+    margin-left: 6px;
+  }
+  .tab.admin:hover {
+    color: var(--blue);
+    border-color: var(--blue);
+    opacity: 1;
+    background: var(--paper-2);
+  }
+</style>
