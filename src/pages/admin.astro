@@ -1,3 +1,7 @@
+---
+// Render this page as a static HTML file at build time
+export const prerender = true;
+---
 <!doctype html>
 <html>
 <head>
@@ -6,13 +10,13 @@
   <title>Content Manager</title>
 </head>
 <body>
-  <script>
+  <script is:inline>
     // Tell Decap CMS not to auto-initialize so we can inject the dynamic origin as base_url
     window.CMS_MANUAL_INIT = true;
   </script>
   <!-- Include the script that builds the page and powers Decap CMS -->
   <script src="https://unpkg.com/decap-cms@^3.0.0/dist/decap-cms.js"></script>
-  <script>
+  <script is:inline>
     // Initialize CMS by merging dynamic base_url with config.yml settings
     CMS.init({
       config: {
@@ -24,4 +28,3 @@
   </script>
 </body>
 </html>
-

@@ -54,6 +54,7 @@ export const GET: APIRoute = async ({ request, locals }) => {
       `;
     } else {
       const errorMessage = data.error_description || data.error || 'Unknown OAuth error';
+      console.error('GitHub OAuth error:', errorMessage, data);
       const payload = { error: errorMessage };
       scriptContent = `
         window.opener.postMessage(
@@ -83,6 +84,7 @@ export const GET: APIRoute = async ({ request, locals }) => {
       headers: { 'Content-Type': 'text/html; charset=utf-8' },
     });
   } catch (err: any) {
+    console.error('GitHub OAuth callback crash:', err);
     const errorPayload = { error: err.message || String(err) };
     const html = `
       <!doctype html>
