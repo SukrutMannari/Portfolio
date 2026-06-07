@@ -15,7 +15,7 @@ export const prerender = true;
     window.CMS_MANUAL_INIT = true;
   </script>
   <!-- Include the script that builds the page and powers Decap CMS -->
-  <script src="https://unpkg.com/decap-cms@^3.0.0/dist/decap-cms.js"></script>
+  <script src="https://unpkg.com/decap-cms@^3.0.0/dist/decap-cms.js" is:inline></script>
   <script is:inline>
     // Initialize CMS by merging dynamic base_url with config.yml settings
     CMS.init({
