@@ -6,6 +6,7 @@ export const SITE = {
   initials: 'SM',
   description:
     'Portfolio of Sukrut Mannari — aspiring aerospace & computer science engineer. Maker projects in robotics, flight, electronics, and AI.',
+  aiAvatar: '/images/SukrutHeadshot.png',
 };
 
 export const NAV = [

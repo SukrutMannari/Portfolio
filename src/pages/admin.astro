@@ -32,5 +32,188 @@ export const prerender = true;
   </script>
   <!-- Include the script that builds the page and powers Decap CMS -->
   <script src="https://unpkg.com/decap-cms@^3.0.0/dist/decap-cms.js" is:inline></script>
+
+  <script is:inline>
+    // Wait for CMS to load and then register our custom AI preview templates
+    (function() {
+      const interval = setInterval(() => {
+        const hasCMS = !!window.CMS;
+        const hasCreateClass = !!(window.createClass || (window.CMS && window.CMS.createClass));
+        if (hasCMS && hasCreateClass) {
+          clearInterval(interval);
+          registerAICoach();
+        }
+      }, 100);
+
+      function registerAICoach() {
+        const createClass = window.createClass || window.CMS.createClass;
+        const h = window.h || window.CMS.h;
+
+        const AIPreview = createClass({
+          getInitialState: function() {
+            return { feedback: null, loading: false, error: null };
+          },
+
+          fetchFeedback: async function() {
+            const { entry, collection } = this.props;
+            const body = entry.getIn(['data', 'body']) || '';
+            const title = entry.getIn(['data', 'title']) || '';
+            const category = entry.getIn(['data', 'category']) || '';
+            const collectionName = collection.get('name') || '';
+
+            // Extract media presence depending on the collection schema
+            const hasThumbnail = !!entry.getIn(['data', 'thumbnail']);
+            const hasCover = !!entry.getIn(['data', 'cover']);
+            const gallery = entry.getIn(['data', 'gallery']);
+            const hasGallery = !!gallery && (typeof gallery.size === 'number' ? gallery.size > 0 : gallery.length > 0);
+
+            this.setState({ loading: true, error: null });
+
+            try {
+              const response = await fetch('/api/ai-feedback', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                  body,
+                  title,
+                  category,
+                  hasThumbnail,
+                  hasCover,
+                  hasGallery,
+                  collection: collectionName
+                })
+              });
+
+              if (!response.ok) {
+                throw new Error('Failed to get feedback from server.');
+              }
+
+              const data = await response.json();
+              this.setState({ feedback: data, loading: false });
+            } catch (err) {
+              console.error(err);
+              this.setState({ loading: false, error: err.message });
+            }
+          },
+
+          render: function() {
+            const title = this.props.entry.getIn(['data', 'title']) || 'Untitled';
+            const bodyWidget = this.props.widgetFor('body');
+            const { feedback, loading, error } = this.state;
+
+            // Layout styling
+            const containerStyle = {
+              display: 'flex',
+              gap: '20px',
+              padding: '20px',
+              fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif',
+              minHeight: '100vh',
+              background: '#f8fafc'
+            };
+
+            const leftColStyle = {
+              flex: '2',
+              minWidth: '0',
+              background: '#ffffff',
+              padding: '24px',
+              borderRadius: '8px',
+              boxShadow: '0 1px 3px 0 rgb(0 0 0 / 0.1)'
+            };
+
+            const rightColStyle = {
+              flex: '1',
+              minWidth: '320px',
+              background: '#0f172a',
+              color: '#f8fafc',
+              padding: '24px',
+              borderRadius: '12px',
+              height: 'fit-content',
+              position: 'sticky',
+              top: '20px',
+              boxShadow: '0 10px 15px -3px rgb(0 0 0 / 0.3)',
+              border: '1px solid #1e293b'
+            };
+
+            const titleStyle = {
+              fontSize: '28px',
+              fontWeight: '800',
+              color: '#0f172a',
+              marginBottom: '20px',
+              borderBottom: '1px solid #e2e8f0',
+              paddingBottom: '12px'
+            };
+
+            const scoreContainerStyle = {
+              background: '#1e293b',
+              padding: '16px',
+              borderRadius: '8px',
+              textAlign: 'center',
+              marginBottom: '20px'
+            };
+
+            const buttonStyle = {
+              width: '100%',
+              background: loading ? '#334155' : '#38bdf8',
+              color: loading ? '#94a3b8' : '#0f172a',
+              border: 'none',
+              padding: '12px',
+              borderRadius: '8px',
+              fontWeight: 'bold',
+              cursor: loading ? 'not-allowed' : 'pointer',
+              fontSize: '14px',
+              transition: 'background 0.2s',
+              marginBottom: '20px'
+            };
+
+            return h('div', { style: containerStyle },
+              // Left Column (Live HTML Preview)
+              h('div', { style: leftColStyle },
+                h('h1', { style: titleStyle }, title),
+                h('div', null, bodyWidget)
+              ),
+              // Right Column (AI Coach Panel)
+              h('div', { style: rightColStyle },
+                h('h2', { style: { marginTop: '0', fontSize: '18px', display: 'flex', alignItems: 'center', gap: '8px', borderBottom: '1px solid #1e293b', paddingBottom: '12px', color: '#38bdf8' } }, '🤖 AI Writing Coach'),
+                
+                // Get AI Feedback Action Button
+                h('button', { 
+                  style: buttonStyle, 
+                  onClick: this.fetchFeedback,
+                  disabled: loading
+                }, loading ? 'Evaluating post...' : 'Get AI Feedback ✨'),
+
+                error ? h('div', { style: { color: '#ef4444', marginBottom: '15px', fontSize: '13px' } }, 'Error: ' + error) : null,
+
+                feedback ? h('div', null,
+                  // Engagement Score
+                  h('div', { style: scoreContainerStyle },
+                    h('div', { style: { fontSize: '11px', color: '#94a3b8', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '4px' } }, 'Engagement Score'),
+                    h('div', { style: { fontSize: '36px', fontWeight: 'bold', color: feedback.score >= 80 ? '#4ade80' : feedback.score >= 50 ? '#facc15' : '#f87171' } }, feedback.score + '%')
+                  ),
+                  // AI Suggestions list
+                  h('div', { style: { marginBottom: '20px' } },
+                    h('h4', { style: { margin: '0 0 10px 0', color: '#38bdf8', fontSize: '14px' } }, 'Coach Questions & Tips:'),
+                    h('ul', { style: { margin: '0', paddingLeft: '20px', fontSize: '13px', lineHeight: '1.6', color: '#cbd5e1' } },
+                      (feedback.suggestions || []).map((item, idx) => h('li', { key: idx, style: { marginBottom: '10px' } }, item))
+                    )
+                  ),
+                  // Programmatic Media Reminders
+                  feedback.mediaReminders && feedback.mediaReminders.length > 0 ? h('div', { style: { marginTop: '15px', borderTop: '1px solid #1e293b', paddingTop: '15px' } },
+                    h('h4', { style: { margin: '0 0 10px 0', color: '#f87171', fontSize: '14px' } }, 'Missing Assets:'),
+                    h('ul', { style: { margin: '0', paddingLeft: '20px', fontSize: '12px', color: '#fca5a5', lineHeight: '1.5' } },
+                      feedback.mediaReminders.map((item, idx) => h('li', { key: idx, style: { marginBottom: '6px' } }, item))
+                    )
+                  ) : h('div', { style: { marginTop: '15px', borderTop: '1px solid #1e293b', paddingTop: '15px', color: '#4ade80', fontSize: '12px', display: 'flex', alignItems: 'center', gap: '6px' } }, '✓ All required media assets uploaded!')
+                ) : h('div', { style: { color: '#94a3b8', fontSize: '13px', textAlign: 'center', padding: '20px 0' } }, 'Click the button above to get feedback and check for missing assets.')
+              )
+            );
+          }
+        });
+
+        window.CMS.registerPreviewTemplate("journal", AIPreview);
+        window.CMS.registerPreviewTemplate("projects", AIPreview);
+      }
+    })();
+  </script>
 </body>
 </html>

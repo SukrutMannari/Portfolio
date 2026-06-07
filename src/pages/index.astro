@@ -52,13 +52,7 @@ const totalServiceHours = serviceEntries.reduce((sum, e) => sum + (e.data.hours 
     </div>
   </section>
 
-  <!-- PHOTO REEL -->
-  <section style="padding-top:30px;padding-bottom:0">
-    <div class="label">In the Workshop</div>
-    <PhotoReel />
-  </section>
-
-  <!-- STATS -->
+  <!-- METRICS BAR (STATS) -->
   <section style="padding-top:48px">
     <div class="stats">
       <div class="stat"><div class="num">100%</div><div class="cap" data-edit>HONOR ROLL<br />EVERY MARKING PERIOD</div></div>
@@ -69,13 +63,7 @@ const totalServiceHours = serviceEntries.reduce((sum, e) => sum + (e.data.hours 
     </div>
   </section>
 
-  <!-- LATEST JOURNAL -->
-  <section style="padding-top:8px"><LatestJournal /></section>
-
-  <!-- INTERACTIVE CORNER -->
-  <section><InteractiveCorner /></section>
-
-  <!-- VALUES -->
+  <!-- CORE VALUES -->
   <section>
     <div class="label">Core Values</div>
     <div class="values">
@@ -86,7 +74,29 @@ const totalServiceHours = serviceEntries.reduce((sum, e) => sum + (e.data.hours 
     </div>
   </section>
 
-  <!-- FEATURED PROJECTS -->
+  <!-- IN THE WORKSHOP (PHOTO REEL) -->
+  <section style="padding-top:30px;padding-bottom:0">
+    <div class="label">In the Workshop</div>
+    <PhotoReel />
+  </section>
+
+  <!-- AT A GLANCE -->
+  <section style="padding-top:0">
+    <div class="label">At a Glance</div>
+    <div class="hl">
+      <a href="/academics" class="hlcard"><div class="k">ACCELERATED MATH</div><div class="v" data-edit>RSM Algebra Honors + Geometry · AoPS AMC 8 / MATHCOUNTS Advanced</div></a>
+      <a href="/academics" class="hlcard"><div class="k">COMPETITIONS</div><div class="v" data-edit>AMC 8 · Joe Holbrook (JHMMC) · Math Kangaroo · Noetic</div></a>
+      <a href="/music" class="hlcard"><div class="k">MUSIC</div><div class="v" data-edit>Lead Baritone Saxophone — Stage Band</div></a>
+      <a href="/leadership" class="hlcard"><div class="k">LEADERSHIP</div><div class="v" data-edit>Taekwondo mentor · Camp Dorm Lead · TREPS entrepreneur</div></a>
+      <a href="/leadership" class="hlcard"><div class="k">SERVICE</div><div class="v" data-edit>Community library · Wall of Kindness · planned e-waste drive</div></a>
+      <a href="/engineering" class="hlcard"><div class="k">BUILDING TOWARD</div><div class="v" data-edit>Autonomous systems · FIRST Lego League club · home automation</div></a>
+    </div>
+  </section>
+
+  <!-- LATEST JOURNAL -->
+  <section style="padding-top:8px"><LatestJournal /></section>
+
+  <!-- ENGINEERING LAB (FEATURED PROJECTS) -->
   <section style="padding-top:0">
     <a class="seeall" href="/engineering">ALL PROJECTS →</a>
     <div class="label">Engineering Lab — Featured</div>
@@ -95,16 +105,7 @@ const totalServiceHours = serviceEntries.reduce((sum, e) => sum + (e.data.hours 
     </div>
   </section>
 
-  <!-- AT A GLANCE -->
-  <section style="padding-top:0">
-    <div class="label">At a Glance</div>
-    <div class="hl">
-      <div class="hlcard"><div class="k">ACCELERATED MATH</div><div class="v" data-edit>RSM Algebra Honors + Geometry · AoPS AMC 8 / MATHCOUNTS Advanced</div></div>
-      <div class="hlcard"><div class="k">COMPETITIONS</div><div class="v" data-edit>AMC 8 · Joe Holbrook (JHMMC) · Math Kangaroo · Noetic</div></div>
-      <div class="hlcard"><div class="k">MUSIC</div><div class="v" data-edit>Lead Baritone Saxophone — Stage Band</div></div>
-      <div class="hlcard"><div class="k">LEADERSHIP</div><div class="v" data-edit>Taekwondo mentor · Camp Dorm Lead · TREPS entrepreneur</div></div>
-      <div class="hlcard"><div class="k">SERVICE</div><div class="v" data-edit>Community library · Wall of Kindness · planned e-waste drive</div></div>
-      <div class="hlcard"><div class="k">BUILDING TOWARD</div><div class="v" data-edit>Autonomous systems · FIRST Lego League club · home automation</div></div>
-    </div>
-  </section>
+  <!-- INTERACTIVE CORNER -->
+  <section><InteractiveCorner /></section>
 </BaseLayout>
+

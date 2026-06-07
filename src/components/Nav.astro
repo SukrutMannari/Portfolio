@@ -8,7 +8,9 @@ const isActive = (href: string) =>
 <header>
   <div class="nav">
     <a class="brand" href="/">
-      <div class="logo">{SITE.initials}</div>
+      <div class="brand-avatar-wrap">
+        <img src="/images/SukrutHeadshot.png" alt="Sukrut Mannari" class="brand-avatar" />
+      </div>
       <div>
         <div class="brand-name">{SITE.name.toUpperCase()}</div>
         <div class="brand-sub">// {SITE.kicker}</div>
@@ -36,6 +38,27 @@ const isActive = (href: string) =>
 </header>
 
 <style>
+  .brand-avatar-wrap {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    overflow: hidden;
+    border: 1.5px solid var(--blue);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    box-sizing: border-box;
+  }
+  .brand-avatar {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transform: scale(1.1); /* Zoom in slightly on face */
+    transform-origin: 50% 40%;
+  }
+
   .tab.admin {
     color: var(--ink-dim);
     border: 1px dashed var(--line-soft);

@@ -1,0 +1,686 @@
+---
+import { SITE } from '../data/site';
+const avatarSrc = SITE.aiAvatar || '/images/SukrutHeadshot.png';
+---
+
+<div class="ai-guide-container">
+  <!-- Trigger Button -->
+  <button id="ai-trigger" class="ai-trigger" aria-label="Open portfolio guide chatbot">
+    <div class="ai-trigger-avatar-wrap">
+      <img src={avatarSrc} alt="Sukrut's AI Assistant avatar" class="ai-trigger-avatar" />
+    </div>
+    <span class="ai-trigger-pulse"></span>
+  </button>
+
+  <!-- Chat Tray -->
+  <div id="ai-tray" class="ai-tray hidden">
+    <div class="ai-header">
+      <div class="ai-title-wrap">
+        <div class="ai-header-avatar-wrap">
+          <img src={avatarSrc} alt="Sukrut's AI Twin avatar" class="ai-header-avatar" />
+        </div>
+        <div>
+          <div class="ai-title">Portfolio Guide</div>
+          <div class="ai-subtitle">AI Twin</div>
+        </div>
+      </div>
+      <div class="ai-actions">
+        <button id="ai-reset" class="ai-action-btn" title="Reset conversation">↺</button>
+        <button id="ai-close" class="ai-action-btn" title="Close chat">×</button>
+      </div>
+    </div>
+
+    <!-- Messages Container -->
+    <div id="ai-messages" class="ai-messages">
+      <div class="msg bot">
+        Hi! I'm Sukrut's AI Twin. Ask me anything about his engineering projects, Taekwondo training, library service hours, or school band performances!
+      </div>
+      
+      <!-- Prompt Chips -->
+      <div id="ai-chips" class="ai-chips">
+        <button class="ai-chip" data-question="What engineering projects have you built?">🛠️ Engineering Projects</button>
+        <button class="ai-chip" data-question="Tell me about your Taekwondo journey.">🥋 Taekwondo Black Belt</button>
+        <button class="ai-chip" data-question="What did you do at the library?">📚 Library Service</button>
+      </div>
+    </div>
+
+    <!-- Loading Indicator -->
+    <div id="ai-loading" class="ai-loading hidden">
+      <span class="dot"></span>
+      <span class="dot"></span>
+      <span class="dot"></span>
+    </div>
+
+    <!-- Footer Input Form -->
+    <form id="ai-form" class="ai-form">
+      <input 
+        type="text" 
+        id="ai-input" 
+        placeholder="Ask a question..." 
+        aria-label="Ask chatbot a question"
+        maxlength="200"
+        required 
+      />
+      <button type="submit" id="ai-submit" aria-label="Send message">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="22" y1="2" x2="11" y2="13"></line>
+          <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+        </svg>
+      </button>
+    </form>
+  </div>
+</div>
+
+<style is:global>
+  /* 1. Container Positioning */
+  .ai-guide-container {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    z-index: 9999;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+
+  /* 2. Floating Trigger Button */
+  .ai-guide-container .ai-trigger {
+    position: relative;
+    width: 68px;
+    height: 68px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #1c6fb5 0%, #155a95 100%) !important;
+    border: none !important;
+    cursor: pointer;
+    box-shadow: 0 6px 24px rgba(0, 0, 0, 0.3) !important;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.2s;
+    padding: 0 !important;
+  }
+
+  .ai-guide-container .ai-trigger:hover {
+    transform: scale(1.08) !important;
+    box-shadow: 0 8px 28px rgba(28, 111, 181, 0.45) !important;
+  }
+
+  /* Circular Avatar Wrappers with Zoom Effect */
+  .ai-guide-container .ai-trigger-avatar-wrap {
+    width: 100% !important;
+    height: 100% !important;
+    border-radius: 50% !important;
+    overflow: hidden !important;
+    position: relative;
+    z-index: 2;
+    border: 2px solid #38bdf8 !important;
+    box-sizing: border-box;
+  }
+
+  .ai-guide-container .ai-trigger-avatar {
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: cover !important;
+    transform: scale(1.3) !important; /* Zoom in on face */
+    transform-origin: 50% 40% !important;
+    display: block !important;
+  }
+
+  .ai-guide-container .ai-header-avatar-wrap {
+    width: 36px !important;
+    height: 36px !important;
+    border-radius: 50% !important;
+    overflow: hidden !important;
+    border: 1.5px solid #38bdf8 !important;
+    box-sizing: border-box;
+  }
+
+  .ai-guide-container .ai-header-avatar {
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: cover !important;
+    transform: scale(1.3) !important; /* Zoom in on face */
+    transform-origin: 50% 40% !important;
+    display: block !important;
+  }
+
+  /* Enhanced Pulse outline effect */
+  .ai-guide-container .ai-trigger-pulse {
+    position: absolute;
+    top: -6px;
+    left: -6px;
+    right: -6px;
+    bottom: -6px;
+    border-radius: 50%;
+    border: 3px solid #38bdf8 !important;
+    box-shadow: 0 0 16px rgba(56, 189, 248, 0.75) !important;
+    animation: pulse 2.2s infinite ease-in-out;
+    z-index: 1;
+    pointer-events: none;
+  }
+
+  @keyframes pulse {
+    0% {
+      transform: scale(0.95);
+      opacity: 1;
+      box-shadow: 0 0 0 0 rgba(56, 189, 248, 0.8);
+    }
+    70% {
+      transform: scale(1.18);
+      opacity: 0.4;
+      box-shadow: 0 0 0 10px rgba(56, 189, 248, 0);
+    }
+    100% {
+      transform: scale(1.3);
+      opacity: 0;
+      box-shadow: 0 0 0 0 rgba(56, 189, 248, 0);
+    }
+  }
+
+  /* 3. Chat Tray */
+  .ai-guide-container .ai-tray {
+    position: absolute;
+    bottom: 84px;
+    right: 0;
+    width: 360px;
+    height: 500px;
+    background: rgba(15, 23, 42, 0.95) !important;
+    backdrop-filter: blur(12px) !important;
+    border: 1px solid rgba(255, 255, 255, 0.08) !important;
+    border-radius: 16px !important;
+    box-shadow: 0 12px 36px rgba(0, 0, 0, 0.4) !important;
+    display: flex !important;
+    flex-direction: column !important;
+    overflow: hidden !important;
+    transition: opacity 0.25s, transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    transform-origin: bottom right;
+  }
+
+  .ai-guide-container .ai-tray.hidden {
+    opacity: 0 !important;
+    transform: scale(0.8) translateY(20px) !important;
+    pointer-events: none !important;
+  }
+
+  /* 4. Chat Header */
+  .ai-guide-container .ai-header {
+    background: rgba(30, 41, 59, 0.8) !important;
+    padding: 14px 16px !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06) !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+  }
+
+  .ai-guide-container .ai-title-wrap {
+    display: flex !important;
+    align-items: center !important;
+    gap: 10px !important;
+  }
+
+  .ai-guide-container .ai-title {
+    font-weight: 700 !important;
+    color: #f8fafc !important;
+    font-size: 14px !important;
+    line-height: 1.2 !important;
+  }
+
+  .ai-guide-container .ai-subtitle {
+    font-size: 11px !important;
+    color: #38bdf8 !important;
+    font-weight: 500 !important;
+  }
+
+  .ai-guide-container .ai-actions {
+    display: flex !important;
+    gap: 8px !important;
+  }
+
+  .ai-guide-container .ai-action-btn {
+    background: none !important;
+    border: none !important;
+    color: #94a3b8 !important;
+    font-size: 18px !important;
+    cursor: pointer !important;
+    padding: 4px !important;
+    line-height: 1 !important;
+    border-radius: 4px !important;
+    transition: color 0.15s, background-color 0.15s;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    width: 24px !important;
+    height: 24px !important;
+  }
+
+  .ai-guide-container .ai-action-btn:hover {
+    color: #f8fafc !important;
+    background: rgba(255, 255, 255, 0.05) !important;
+  }
+
+  /* 5. Messages Area */
+  .ai-guide-container .ai-messages {
+    flex: 1 !important;
+    overflow-y: auto !important;
+    padding: 16px !important;
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 12px !important;
+    scrollbar-width: thin !important;
+    scrollbar-color: rgba(255, 255, 255, 0.1) transparent !important;
+  }
+
+  /* Scrollbar styles for webkit */
+  .ai-guide-container .ai-messages::-webkit-scrollbar {
+    width: 5px !important;
+  }
+  .ai-guide-container .ai-messages::-webkit-scrollbar-thumb {
+    background-color: rgba(255, 255, 255, 0.1) !important;
+    border-radius: 4px !important;
+  }
+
+  .ai-guide-container .msg {
+    max-width: 85% !important;
+    padding: 10px 14px !important;
+    border-radius: 12px !important;
+    font-size: 13px !important;
+    line-height: 1.45 !important;
+    word-break: break-word !important;
+    color: #cbd5e1 !important;
+  }
+
+  .ai-guide-container .msg.bot {
+    align-self: flex-start !important;
+    background: rgba(30, 41, 59, 0.75) !important;
+    border-top-left-radius: 2px !important;
+    border: 1px solid rgba(255, 255, 255, 0.08) !important;
+    color: #cbd5e1 !important;
+  }
+
+  .ai-guide-container .msg.user {
+    align-self: flex-end !important;
+    background: #1c6fb5 !important;
+    color: #ffffff !important;
+    border-top-right-radius: 2px !important;
+  }
+
+  /* Style markdown tags in chatbot output */
+  .ai-guide-container .msg p {
+    margin: 0 0 6px 0 !important;
+    font-size: 13px !important;
+    color: inherit !important;
+    line-height: 1.45 !important;
+  }
+
+  .ai-guide-container .msg p:last-child {
+    margin-bottom: 0 !important;
+  }
+
+  .ai-guide-container .msg strong {
+    color: #f8fafc !important;
+    font-weight: 600 !important;
+  }
+
+  .ai-guide-container .msg ul {
+    margin: 4px 0 !important;
+    padding-left: 18px !important;
+    color: #cbd5e1 !important;
+    list-style-type: disc !important;
+  }
+
+  .ai-guide-container .msg li {
+    margin-bottom: 4px !important;
+    color: #cbd5e1 !important;
+    font-size: 13px !important;
+    line-height: 1.4 !important;
+  }
+
+  .ai-guide-container .msg a {
+    color: #38bdf8 !important;
+    text-decoration: underline !important;
+  }
+  
+  .ai-guide-container .msg a:hover {
+    color: #7dd3fc !important;
+  }
+
+  /* 6. Prompt Chips */
+  .ai-guide-container .ai-chips {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 8px !important;
+    margin-top: 6px !important;
+    align-self: flex-start !important;
+    width: 100% !important;
+  }
+
+  .ai-guide-container .ai-chip {
+    background: rgba(56, 189, 248, 0.08) !important;
+    border: 1px solid rgba(56, 189, 248, 0.2) !important;
+    color: #38bdf8 !important;
+    padding: 8px 12px !important;
+    border-radius: 8px !important;
+    font-size: 12px !important;
+    cursor: pointer !important;
+    text-align: left !important;
+    transition: background-color 0.15s, border-color 0.15s;
+    width: fit-content !important;
+    max-width: 100% !important;
+  }
+
+  .ai-guide-container .ai-chip:hover {
+    background: rgba(56, 189, 248, 0.15) !important;
+    border-color: rgba(56, 189, 248, 0.35) !important;
+  }
+
+  /* 7. Typing Indicator */
+  .ai-guide-container .ai-loading {
+    align-self: flex-start !important;
+    margin-left: 16px !important;
+    margin-bottom: 12px !important;
+    display: flex !important;
+    gap: 4px !important;
+    background: rgba(30, 41, 59, 0.6) !important;
+    padding: 10px 14px !important;
+    border-radius: 12px !important;
+    border-top-left-radius: 2px !important;
+    width: fit-content !important;
+  }
+
+  .ai-guide-container .ai-loading.hidden {
+    display: none !important;
+  }
+
+  .ai-guide-container .ai-loading .dot {
+    width: 6px !important;
+    height: 6px !important;
+    background: #94a3b8 !important;
+    border-radius: 50% !important;
+    animation: bounce 1.4s infinite ease-in-out both;
+  }
+
+  .ai-guide-container .ai-loading .dot:nth-child(1) { animation-delay: -0.32s; }
+  .ai-guide-container .ai-loading .dot:nth-child(2) { animation-delay: -0.16s; }
+
+  /* 8. Input Form */
+  .ai-guide-container .ai-form {
+    padding: 12px 16px !important;
+    background: rgba(15, 23, 42, 0.95) !important;
+    border-top: 1px solid rgba(255, 255, 255, 0.06) !important;
+    display: flex !important;
+    gap: 8px !important;
+    align-items: center !important;
+  }
+
+  .ai-guide-container .ai-form input {
+    flex: 1 !important;
+    background: rgba(30, 41, 59, 0.8) !important;
+    border: 1px solid rgba(255, 255, 255, 0.08) !important;
+    border-radius: 8px !important;
+    padding: 10px 12px !important;
+    color: #f8fafc !important;
+    font-size: 13px !important;
+    outline: none !important;
+    transition: border-color 0.15s, background-color 0.15s;
+  }
+
+  .ai-guide-container .ai-form input:focus {
+    border-color: #1c6fb5 !important;
+    background: rgba(30, 41, 59, 1) !important;
+  }
+
+  .ai-guide-container .ai-form button {
+    background: #1c6fb5 !important;
+    border: none !important;
+    color: #ffffff !important;
+    width: 36px !important;
+    height: 36px !important;
+    border-radius: 8px !important;
+    cursor: pointer !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    transition: background-color 0.15s, transform 0.1s;
+    flex-shrink: 0;
+  }
+
+  .ai-guide-container .ai-form button:hover {
+    background: #155a95 !important;
+  }
+
+  .ai-guide-container .ai-form button:active {
+    transform: scale(0.95) !important;
+  }
+
+  .ai-guide-container .ai-form button svg {
+    width: 16px !important;
+    height: 16px !important;
+  }
+
+  /* 9. Mobile Responsiveness */
+  @media (max-width: 480px) {
+    .ai-guide-container {
+      bottom: 16px;
+      right: 16px;
+    }
+    .ai-tray {
+      position: fixed;
+      bottom: 0;
+      right: 0;
+      width: 100vw;
+      height: 100vh;
+      border-radius: 0;
+      border: none;
+    }
+    .ai-tray.hidden {
+      transform: translateY(100%);
+    }
+    .ai-header {
+      padding: 16px;
+    }
+  }
+</style>
+
+<script>
+  // Chat Client Script
+  (function() {
+    const trigger = document.getElementById('ai-trigger')!;
+    const tray = document.getElementById('ai-tray')!;
+    const closeBtn = document.getElementById('ai-close')!;
+    const resetBtn = document.getElementById('ai-reset')!;
+    const messagesContainer = document.getElementById('ai-messages')!;
+    const chipsContainer = document.getElementById('ai-chips')!;
+    const loadingEl = document.getElementById('ai-loading')!;
+    const form = document.getElementById('ai-form') as HTMLFormElement;
+    const input = document.getElementById('ai-input') as HTMLInputElement;
+
+    // Local Chat Session History State
+    let conversationHistory = [
+      {
+        role: 'assistant',
+        content: "Hi! I'm Sukrut's AI Twin. Ask me anything about his engineering projects, Taekwondo training, library service hours, or school band performances!"
+      }
+    ];
+    let isRequestActive = false;
+    let messageCount = 0;
+    const MAX_MESSAGES_PER_SESSION = 15;
+
+    // Simple markdown parsing function (bold, lists, links)
+    function parseMarkdown(text: string): string {
+      return text
+        // Escape HTML
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        // Bold: **text**
+        .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+        // Italics: *text*
+        .replace(/\*(.*?)\*/g, '<em>$1</em>')
+        // Links: [label](url)
+        .replace(/\[(.*?)\]\((.*?)\)/g, '<a href="$2" target="_blank" rel="noopener noreferrer">$1</a>')
+        // Unordered lists: - item or * item
+        .replace(/^\s*[-*]\s+(.*?)$/gm, '<li>$1</li>')
+        // Wrap contiguous list items in ul
+        .replace(/(<li>.*?<\/li>)+/g, '<ul>$&</ul>');
+    }
+
+    function toggleChat() {
+      tray.classList.toggle('hidden');
+      if (!tray.classList.contains('hidden')) {
+        input.focus();
+        scrollToBottom();
+      }
+    }
+
+    function scrollToBottom() {
+      messagesContainer.scrollTop = messagesContainer.scrollHeight;
+    }
+
+    function appendMessage(role: 'user' | 'assistant', text: string) {
+      const msgDiv = document.createElement('div');
+      msgDiv.className = `msg ${role === 'assistant' ? 'bot' : 'user'}`;
+      
+      if (role === 'assistant') {
+        msgDiv.innerHTML = parseMarkdown(text);
+      } else {
+        msgDiv.textContent = text;
+      }
+      
+      // Insert before loading/chips indicators
+      if (role === 'user') {
+        messagesContainer.appendChild(msgDiv);
+      } else {
+        messagesContainer.appendChild(msgDiv);
+      }
+
+      // Keep scroll anchored to bottom
+      scrollToBottom();
+    }
+
+    function showLoading(show: boolean) {
+      if (show) {
+        loadingEl.classList.remove('hidden');
+        messagesContainer.appendChild(loadingEl);
+      } else {
+        loadingEl.classList.add('hidden');
+      }
+      scrollToBottom();
+    }
+
+    async function handleSendMessage(text: string) {
+      if (isRequestActive) return;
+
+      const trimmedText = text.trim();
+      if (!trimmedText) return;
+
+      // 1. Session capacity check
+      if (messageCount >= MAX_MESSAGES_PER_SESSION) {
+        appendMessage('assistant', "You have reached the maximum number of questions for this session. Please click the reset button (↺) at the top of the chat to start a new conversation!");
+        return;
+      }
+
+      // Hide prompt chips once conversation starts
+      if (chipsContainer) {
+        chipsContainer.remove();
+      }
+
+      appendMessage('user', trimmedText);
+      input.value = '';
+
+      conversationHistory.push({ role: 'user', content: trimmedText });
+      messageCount++;
+      isRequestActive = true;
+      showLoading(true);
+
+      try {
+        const response = await fetch('/api/chat', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ messages: conversationHistory })
+        });
+
+        if (!response.ok) {
+          throw new Error(`Server returned status ${response.status}`);
+        }
+
+        const data = await response.json();
+        const replyText = data.text || "I was unable to retrieve a response.";
+
+        appendMessage('assistant', replyText);
+        conversationHistory.push({ role: 'assistant', content: replyText });
+      } catch (err: any) {
+        console.error('[Chat Widget Client Error]:', err.message);
+        appendMessage('assistant', "Sorry, I am having trouble connecting to the server. Please check your internet connection and try again.");
+      } finally {
+        isRequestActive = false;
+        showLoading(false);
+        input.focus();
+      }
+    }
+
+    function resetConversation() {
+      if (confirm("Reset the conversation history?")) {
+        conversationHistory = [
+          {
+            role: 'assistant',
+            content: "Hi! I'm Sukrut's AI Twin. Ask me anything about his engineering projects, Taekwondo training, library service hours, or school band performances!"
+          }
+        ];
+        messageCount = 0;
+        isRequestActive = false;
+
+        // Clear all except loading indicator
+        messagesContainer.innerHTML = '';
+        appendMessage('assistant', conversationHistory[0].content);
+
+        // Re-append the chips container
+        if (chipsContainer) {
+          messagesContainer.appendChild(chipsContainer);
+        }
+        
+        messagesContainer.appendChild(loadingEl);
+        input.value = '';
+        input.focus();
+      }
+    }
+
+    // Event Listeners
+    trigger.addEventListener('click', toggleChat);
+    closeBtn.addEventListener('click', toggleChat);
+    resetBtn.addEventListener('click', resetConversation);
+
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      handleSendMessage(input.value);
+    });
+
+    // Handle suggestion chips & clickable query links
+    messagesContainer.addEventListener('click', (e) => {
+      const target = e.target as HTMLElement;
+      if (target && target.classList.contains('ai-chip')) {
+        const question = target.getAttribute('data-question');
+        if (question) {
+          handleSendMessage(question);
+        }
+        return;
+      }
+
+      // Intercept clicks on links using the query: protocol
+      const anchor = target.closest('a');
+      if (anchor) {
+        const href = anchor.getAttribute('href');
+        if (href && href.startsWith('query:')) {
+          e.preventDefault();
+          const query = decodeURIComponent(href.slice(6));
+          handleSendMessage(query);
+        }
+      }
+    });
+
+    // Keyboard support: Escape closes chat
+    window.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && !tray.classList.contains('hidden')) {
+        toggleChat();
+      }
+    });
+
+  })();
+</script>

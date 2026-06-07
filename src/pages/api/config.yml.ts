@@ -19,10 +19,11 @@ export const GET: APIRoute = async ({ request }) => {
     return new Response(`Error loading config: ${fetchErr.message}`, { status: 500 });
   }
 
-  // Replace "backend:" with "backend:" and the dynamic "base_url"
+  // Replace "backend:" with the dynamic "base_url" and optional "local_backend: true" prepended
+  const isLocal = origin.includes('localhost') || origin.includes('127.0.0.1');
   yamlText = yamlText.replace(
     /backend:/i,
-    `backend:\n  base_url: ${origin}`
+    `${isLocal ? 'local_backend: true\n' : ''}backend:\n  base_url: ${origin}`
   );
 
   return new Response(yamlText, {
