@@ -18,7 +18,7 @@ export const NAV = [
   { label: 'Music', href: '/music' },
   { label: 'Journal', href: '/journal' },
   { label: 'Résumé ↓', href: '/resume.pdf', resume: true },
-  { label: '✎ Admin', href: '/admin', admin: true },
+  { label: '✎ Admin', href: '/admin/', admin: true },
 ];
 
 // Engineering disciplines — order here controls sidebar + grouping order.

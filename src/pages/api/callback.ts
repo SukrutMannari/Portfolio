@@ -2,12 +2,12 @@ import type { APIRoute } from 'astro';
 
 export const prerender = false;
 
-export const GET: APIRoute = async ({ request }) => {
+export const GET: APIRoute = async ({ request, locals }) => {
   const url = new URL(request.url);
   const code = url.searchParams.get('code');
   
-  const client_id = import.meta.env.GITHUB_CLIENT_ID;
-  const client_secret = import.meta.env.GITHUB_CLIENT_SECRET;
+  const client_id = locals?.runtime?.env?.GITHUB_CLIENT_ID || import.meta.env.GITHUB_CLIENT_ID;
+  const client_secret = locals?.runtime?.env?.GITHUB_CLIENT_SECRET || import.meta.env.GITHUB_CLIENT_SECRET;
 
   if (!code) {
     return new Response('Error: Missing authorization code from GitHub.', { 
@@ -50,6 +50,7 @@ export const GET: APIRoute = async ({ request }) => {
           "authorization:github:success:" + ${JSON.stringify(JSON.stringify(payload))},
           "*"
         );
+        window.close();
       `;
     } else {
       const errorMessage = data.error_description || data.error || 'Unknown OAuth error';
@@ -59,6 +60,7 @@ export const GET: APIRoute = async ({ request }) => {
           "authorization:github:error:" + ${JSON.stringify(JSON.stringify(payload))},
           "*"
         );
+        window.close();
       `;
     }
 
@@ -95,6 +97,7 @@ export const GET: APIRoute = async ({ request }) => {
               "authorization:github:error:" + ${JSON.stringify(JSON.stringify(errorPayload))},
               "*"
             );
+            window.close();
           </script>
         </body>
       </html>

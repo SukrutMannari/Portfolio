@@ -2,8 +2,8 @@ import type { APIRoute } from 'astro';
 
 export const prerender = false;
 
-export const GET: APIRoute = async ({ redirect }) => {
-  const client_id = import.meta.env.GITHUB_CLIENT_ID;
+export const GET: APIRoute = async ({ redirect, locals }) => {
+  const client_id = locals?.runtime?.env?.GITHUB_CLIENT_ID || import.meta.env.GITHUB_CLIENT_ID;
   
   if (!client_id) {
     return new Response('Error: GITHUB_CLIENT_ID environment variable is not defined.', { 
