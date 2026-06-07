@@ -11,20 +11,26 @@ export const prerender = true;
 </head>
 <body>
   <script is:inline>
-    // Tell Decap CMS not to auto-initialize so we can inject the dynamic origin as base_url
-    window.CMS_MANUAL_INIT = true;
+    // Intercept Decap CMS configuration fetch to dynamically redirect to /api/config.yml
+    const originalFetch = window.fetch;
+    window.fetch = async function (url, options) {
+      let urlString = typeof url === 'string' ? url : (url?.url || '');
+      if (urlString.includes('config.yml') && !urlString.includes('api/config.yml')) {
+        return originalFetch(`/api/config.yml`, options);
+      }
+      return originalFetch(url, options);
+    };
+
+    // Intercept XMLHttpRequest to also redirect to /api/config.yml
+    const originalOpen = window.XMLHttpRequest.prototype.open;
+    window.XMLHttpRequest.prototype.open = function(method, url, ...args) {
+      if (typeof url === 'string' && url.includes('config.yml') && !url.includes('api/config.yml')) {
+        url = `/api/config.yml`;
+      }
+      return originalOpen.call(this, method, url, ...args);
+    };
   </script>
   <!-- Include the script that builds the page and powers Decap CMS -->
   <script src="https://unpkg.com/decap-cms@^3.0.0/dist/decap-cms.js" is:inline></script>
-  <script is:inline>
-    // Initialize CMS by merging dynamic base_url with config.yml settings
-    CMS.init({
-      config: {
-        backend: {
-          base_url: window.location.origin
-        }
-      }
-    });
-  </script>
 </body>
 </html>

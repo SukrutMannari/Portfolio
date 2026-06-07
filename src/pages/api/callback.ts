@@ -46,22 +46,62 @@ export const GET: APIRoute = async ({ request, locals }) => {
         provider: 'github',
       };
       scriptContent = `
-        window.opener.postMessage(
-          "authorization:github:success:" + ${JSON.stringify(JSON.stringify(payload))},
-          "*"
-        );
-        window.close();
+        (function() {
+          const payload = ${JSON.stringify(payload)};
+          let receivedReady = false;
+          
+          function receiveMessage(event) {
+            if (event.data === "authorization:github:ready") {
+              receivedReady = true;
+              window.opener.postMessage("authorization:github:success:" + JSON.stringify(payload), event.origin);
+              window.removeEventListener("message", receiveMessage);
+              window.close();
+            }
+          }
+          
+          window.addEventListener("message", receiveMessage, false);
+          window.opener.postMessage("authorizing:github", "*");
+          
+          // Fallback if the opener doesn't support the handshake
+          setTimeout(() => {
+            if (!receivedReady) {
+              window.opener.postMessage("authorization:github:success:" + JSON.stringify(payload), "*");
+              window.removeEventListener("message", receiveMessage);
+              window.close();
+            }
+          }, 1000);
+        })();
       `;
     } else {
       const errorMessage = data.error_description || data.error || 'Unknown OAuth error';
       console.error('GitHub OAuth error:', errorMessage, data);
       const payload = { error: errorMessage };
       scriptContent = `
-        window.opener.postMessage(
-          "authorization:github:error:" + ${JSON.stringify(JSON.stringify(payload))},
-          "*"
-        );
-        window.close();
+        (function() {
+          const payload = ${JSON.stringify(payload)};
+          let receivedReady = false;
+          
+          function receiveMessage(event) {
+            if (event.data === "authorization:github:ready") {
+              receivedReady = true;
+              window.opener.postMessage("authorization:github:error:" + JSON.stringify(payload), event.origin);
+              window.removeEventListener("message", receiveMessage);
+              window.close();
+            }
+          }
+          
+          window.addEventListener("message", receiveMessage, false);
+          window.opener.postMessage("authorizing:github", "*");
+          
+          // Fallback if the opener doesn't support the handshake
+          setTimeout(() => {
+            if (!receivedReady) {
+              window.opener.postMessage("authorization:github:error:" + JSON.stringify(payload), "*");
+              window.removeEventListener("message", receiveMessage);
+              window.close();
+            }
+          }, 1000);
+        })();
       `;
     }
 
@@ -95,11 +135,30 @@ export const GET: APIRoute = async ({ request, locals }) => {
         <body>
           <p>Authentication failed: ${err.message || err}</p>
           <script>
-            window.opener.postMessage(
-              "authorization:github:error:" + ${JSON.stringify(JSON.stringify(errorPayload))},
-              "*"
-            );
-            window.close();
+            (function() {
+              const payload = ${JSON.stringify(errorPayload)};
+              let receivedReady = false;
+              
+              function receiveMessage(event) {
+                if (event.data === "authorization:github:ready") {
+                  receivedReady = true;
+                  window.opener.postMessage("authorization:github:error:" + JSON.stringify(payload), event.origin);
+                  window.removeEventListener("message", receiveMessage);
+                  window.close();
+                }
+              }
+              
+              window.addEventListener("message", receiveMessage, false);
+              window.opener.postMessage("authorizing:github", "*");
+              
+              setTimeout(() => {
+                if (!receivedReady) {
+                  window.opener.postMessage("authorization:github:error:" + JSON.stringify(payload), "*");
+                  window.removeEventListener("message", receiveMessage);
+                  window.close();
+                }
+              }, 1000);
+            })();
           </script>
         </body>
       </html>
