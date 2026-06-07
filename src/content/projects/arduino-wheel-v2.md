@@ -10,8 +10,11 @@ skills:
   - Analog I/O
   - PCB layout
   - Device interfacing
+thumbnail: /images/pxl_20260126_174435503.raw-01.cover.jpg
 gallery:
   - /images/pxl_20260126_174258185.raw-01.cover.jpg
+  - /images/pxl_20260126_174227823.raw-01.cover.jpg
+  - /images/pxl_20260126_174444181.raw-01.cover.jpg
 github: https://github.com/SukrutMannari/Unojoy_Wheel_code
 featured: false
 order: 4
