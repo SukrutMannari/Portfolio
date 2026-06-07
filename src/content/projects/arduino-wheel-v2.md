@@ -11,7 +11,7 @@ skills:
   - PCB layout
   - Device interfacing
 gallery:
-  - /images/pxl_20260126_174227823.raw-01.cover.jpg
+  - /images/pxl_20260126_174258185.raw-01.cover.jpg
 github: https://github.com/SukrutMannari/Unojoy_Wheel_code
 featured: false
 order: 4
