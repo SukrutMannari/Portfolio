@@ -3,6 +3,20 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import Toolbox from '../components/Toolbox.astro';
 import { TOOLBOX } from '../data/site';
 const tb = TOOLBOX.academics;
+
+const MATH_PROGRESSION = [
+  { track: 'Russian School of Math', period: '2024 - 2026', note: 'Algebra Honors & Geometry coursework completed.', active: false },
+  { track: 'Art of Problem Solving', period: 'Summer 2026', note: 'AMC 8 / MATHCOUNTS Advanced prep.', active: true },
+  { track: 'Master Prep', period: 'Fall 2026', note: 'BCA intensive math training.', active: false },
+];
+
+const COMPETITIONS = [
+  { name: 'AMC 8', date: 'JANUARY 2027', status: 'Preparing', notes: 'American Mathematics Competitions training via AoPS.' },
+  { name: 'JHMMC', date: 'OCTOBER 2026', status: 'Registered', notes: 'Joe Holbrook Memorial Math Competition at BCA.' },
+  { name: 'Math Kangaroo', date: 'ANNUAL', status: 'Active', notes: 'International mathematical competition focusing on problem-solving.' },
+  { name: 'Noetic Learning', date: 'ANNUAL', status: 'Active', notes: 'National semiannual math contest for elementary and middle school students.' },
+  { name: 'Genius Cerebrum', date: 'ANNUAL', status: 'Active', notes: 'International Mathematics Olympiad for testing analytical thinking.' },
+];
 ---
 
 <BaseLayout title="Academics & Awards">
@@ -11,12 +25,75 @@ const tb = TOOLBOX.academics;
     <h1 data-edit>Holding myself to a high standard.</h1>
     <p data-edit>Straight-A / A- student · Honor Roll every marking period · National Junior Honor Society inductee.</p>
   </div>
-  <section style="padding-top:0;padding-bottom:0"><Toolbox label={tb.label} items={tb.items} /></section>
-  <section>
-    <div class="hl">
-      <div class="hlcard"><div class="k">ACCELERATED MATH</div><div class="v" data-edit>RSM Algebra Honors + Geometry · AoPS AMC 8 / MATHCOUNTS Advanced · Master Prep</div></div>
-      <div class="hlcard"><div class="k">COMPETITIONS</div><div class="v" data-edit>AMC 8 (Jan 2027) · JHMMC (Oct 2026) · Math Kangaroo · Noetic · Genius Cerebrum</div></div>
-      <div class="hlcard"><div class="k">RECOGNITION</div><div class="v" data-edit>Honor Roll every marking period · NJHS inductee</div></div>
+
+  <section style="padding-top:0;padding-bottom:0">
+    <Toolbox label={tb.label} items={tb.items} />
+  </section>
+
+  <!-- Zone 1: Stats -->
+  <section style="padding-bottom:0">
+    <div class="stats">
+      <div class="stat" style="flex: 1;">
+        <div class="num">100%</div>
+        <div class="cap">HONOR ROLL<br />EVERY MARKING PERIOD</div>
+      </div>
+      <div class="stat" style="flex: 1;">
+        <div class="num">NJHS</div>
+        <div class="cap">NATIONAL JUNIOR<br />HONOR SOCIETY INDUCTEE</div>
+      </div>
+      <div class="stat" style="flex: 1;">
+        <div class="num">A / A-</div>
+        <div class="cap">ACADEMIC AVERAGE<br />IN ALL STEM SUBJECTS</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Zone 2: Math Track Timeline -->
+  <section style="padding-bottom:0">
+    <div class="label">// ACCELERATED MATH PROGRESSION</div>
+    <div class="timeline">
+      {MATH_PROGRESSION.map((step, idx) => (
+        <div class="timeline-step">
+          <div class={`tnode ${step.active ? 'active' : ''}`}>
+            {idx + 1}
+          </div>
+          <div>
+            <div class="tstep-label">{step.track}</div>
+            <div class="tstep-period">{step.period}</div>
+            <div class="tstep-note">{step.note}</div>
+          </div>
+        </div>
+      ))}
+    </div>
+  </section>
+
+  <!-- Zone 3: Competitions Grid -->
+  <section style="padding-bottom:0">
+    <div class="label">// MATH COMPETITIONS &amp; OLYMPIADS</div>
+    <div class="grid3">
+      {COMPETITIONS.map(c => (
+        <div class="card">
+          <div class="card-body">
+            <div class="ptag">
+              <span class="chip">{c.status.toUpperCase()}</span>
+              <span style="font-family:var(--font-mono);font-size:10px;color:var(--ink-dim)">{c.date}</span>
+            </div>
+            <h3 style="margin-top:12px">{c.name}</h3>
+            <p>{c.notes}</p>
+          </div>
+        </div>
+      ))}
+    </div>
+  </section>
+
+  <!-- Zone 4: Narrative -->
+  <section style="max-width:820px">
+    <div class="label">// CITIZENSHIP &amp; ACADEMICS</div>
+    <div class="pd">
+      <p data-edit>
+        Good citizenship, to me, also means being responsible for my own learning. That's why I've kept my grades high and stayed active in both Math Club and Computer Club — and why I keep pushing into harder math through RSM, AoPS, and competition prep.
+      </p>
     </div>
   </section>
 </BaseLayout>
+

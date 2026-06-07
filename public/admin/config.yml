@@ -70,3 +70,46 @@ collections:
       - { label: "GitHub URL", name: "github", widget: "string", required: false }
       - { label: "Date", name: "date", widget: "datetime" }
       - { label: "Body", name: "body", widget: "markdown", required: false }
+
+  - name: "service"
+    label: "Service Log"
+    folder: "src/content/service"
+    create: true
+    slug: "{{slug}}"
+    fields:
+      - { label: "Title", name: "title", widget: "string" }
+      - { label: "Date", name: "date", widget: "datetime" }
+      - { label: "Hours", name: "hours", widget: "number", value_type: "float", required: false }
+      - { label: "Role", name: "role", widget: "string", required: false }
+      - { label: "Category", name: "category", widget: "select", options: ["library", "njhs", "school", "community", "other"], default: "other" }
+      - { label: "Notes", name: "notes", widget: "string", required: false }
+      - { label: "Body", name: "body", widget: "markdown", required: false }
+
+  - name: "taekwondo"
+    label: "Taekwondo Log"
+    folder: "src/content/taekwondo"
+    create: true
+    slug: "{{slug}}"
+    fields:
+      - { label: "Title", name: "title", widget: "string" }
+      - { label: "Date", name: "date", widget: "datetime" }
+      - { label: "Event Type", name: "eventType", widget: "select", options: ["grading", "competition", "teaching", "training", "other"] }
+      - { label: "Notes", name: "notes", widget: "string", required: false }
+      - { label: "Body", name: "body", widget: "markdown", required: false }
+
+  - name: "performances"
+    label: "Performances (Music)"
+    folder: "src/content/performances"
+    create: true
+    slug: "{{slug}}"
+    fields:
+      - { label: "Title", name: "title", widget: "string" }
+      - { label: "Date", name: "date", widget: "datetime" }
+      - { label: "Venue", name: "venue", widget: "string", required: false }
+      - { label: "Instrument", name: "instrument", widget: "string", default: "Baritone Saxophone" }
+      - { label: "Role", name: "role", widget: "string", required: false }
+      - { label: "Performance Type", name: "performanceType", widget: "select", options: ["band", "solo", "competition", "other"], default: "band" }
+      - { label: "Notes", name: "notes", widget: "string", required: false }
+      - { label: "Cover Image", name: "cover", widget: "image", required: false }
+      - { label: "Body", name: "body", widget: "markdown", required: false }
+
