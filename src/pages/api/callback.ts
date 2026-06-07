@@ -41,24 +41,23 @@ export const GET: APIRoute = async ({ request }) => {
 
     let scriptContent = '';
     if (data.access_token) {
-      const responseData = {
+      const payload = {
         token: data.access_token,
         provider: 'github',
       };
       scriptContent = `
-        const token = "${data.access_token}";
-        const provider = "github";
         window.opener.postMessage(
-          "authorization:github:success:" + JSON.stringify({ token, provider }),
-          window.location.origin
+          "authorization:github:success:" + ${JSON.stringify(JSON.stringify(payload))},
+          "*"
         );
       `;
     } else {
       const errorMessage = data.error_description || data.error || 'Unknown OAuth error';
+      const payload = { error: errorMessage };
       scriptContent = `
         window.opener.postMessage(
-          "authorization:github:error:" + JSON.stringify({ error: "${errorMessage}" }),
-          window.location.origin
+          "authorization:github:error:" + ${JSON.stringify(JSON.stringify(payload))},
+          "*"
         );
       `;
     }
@@ -82,6 +81,7 @@ export const GET: APIRoute = async ({ request }) => {
       headers: { 'Content-Type': 'text/html; charset=utf-8' },
     });
   } catch (err: any) {
+    const errorPayload = { error: err.message || String(err) };
     const html = `
       <!doctype html>
       <html>
@@ -92,8 +92,8 @@ export const GET: APIRoute = async ({ request }) => {
           <p>Authentication failed: ${err.message || err}</p>
           <script>
             window.opener.postMessage(
-              "authorization:github:error:" + JSON.stringify({ error: "${err.message || err}" }),
-              window.location.origin
+              "authorization:github:error:" + ${JSON.stringify(JSON.stringify(errorPayload))},
+              "*"
             );
           </script>
         </body>
