@@ -5,7 +5,7 @@ const projects = defineCollection({
   schema: z.object({
     title: z.string(),
     // must match a key in CATEGORIES (src/data/site.ts)
-    category: z.enum(['aero', 'robotics', 'electronics', 'cad', 'automation', 'ai', 'structures']),
+    category: z.enum(['aero', 'robotics', 'electronics', 'automation', 'ai', 'structures']),
     status: z.enum(['complete', 'in-progress', 'planned']),
     summary: z.string(),
     skills: z.array(z.string()).default([]),

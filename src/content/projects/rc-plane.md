@@ -4,6 +4,8 @@ category: aero
 status: in-progress
 summary: "Scratch-building a powered fixed-wing RC aircraft — airframe design, prop selection, and radio setup."
 skills: ["Aerodynamics", "RC systems", "Soldering & wiring", "Iterative design"]
+thumbnail: "/photos/rc_plane_completed.jpg"
+gallery: ["/photos/rc_plane_completed.jpg", "/photos/rc_plane_build.jpg"]
 featured: true
 order: 2
 date: 2026-03-01

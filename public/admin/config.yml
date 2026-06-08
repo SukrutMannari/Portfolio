@@ -17,7 +17,7 @@ collections:
     slug: "{{slug}}"
     fields:
       - { label: "Title", name: "title", widget: "string" }
-      - { label: "Category", name: "category", widget: "select", options: ["aero", "robotics", "electronics", "cad", "automation", "ai", "structures"] }
+      - { label: "Category", name: "category", widget: "select", options: ["aero", "robotics", "electronics", "automation", "ai", "structures"] }
       - { label: "Status", name: "status", widget: "select", options: ["complete", "in-progress", "planned"] }
       - { label: "Summary", name: "summary", widget: "string" }
       - { label: "Skills", name: "skills", widget: "list" }

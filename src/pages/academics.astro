@@ -87,13 +87,46 @@ const COMPETITIONS = [
   </section>
 
   <!-- Zone 4: Narrative -->
-  <section style="max-width:820px">
+  <section style="max-width:980px">
     <div class="label">// CITIZENSHIP &amp; ACADEMICS</div>
-    <div class="pd">
-      <p data-edit>
-        Good citizenship, to me, also means being responsible for my own learning. That's why I've kept my grades high and stayed active in both Math Club and Computer Club — and why I keep pushing into harder math through RSM, AoPS, and competition prep.
-      </p>
+    <div class="narrative-grid">
+      <div class="pd" style="margin-top:0">
+        <p data-edit style="margin-top:0">
+          Good citizenship, to me, also means being responsible for my own learning. That's why I've kept my grades high and stayed active in both Math Club and Computer Club — and why I keep pushing into harder math through RSM, AoPS, and competition prep.
+        </p>
+        <p style="font-size:13px; color:var(--ink-dim); margin-top:12px; font-family:var(--font-mono)">
+          // FORMALLY INDUCTED INTO THE NATIONAL JUNIOR HONOR SOCIETY (NJHS) ON APRIL 29, 2026.
+        </p>
+      </div>
+      <div class="narrative-photo">
+        <img src="/photos/njhs_induction.jpg" alt="National Junior Honor Society Induction Ceremony" />
+      </div>
     </div>
   </section>
+
+  <style>
+    .narrative-grid {
+      display: grid;
+      grid-template-columns: 1.2fr 1fr;
+      gap: 32px;
+      align-items: center;
+      margin-top: 16px;
+    }
+    .narrative-photo {
+      border: 1px solid var(--line);
+      border-radius: 4px;
+      overflow: hidden;
+    }
+    .narrative-photo img {
+      width: 100%;
+      display: block;
+    }
+    @media (max-width: 768px) {
+      .narrative-grid {
+        grid-template-columns: 1fr;
+        gap: 20px;
+      }
+    }
+  </style>
 </BaseLayout>
 

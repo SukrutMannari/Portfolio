@@ -4,7 +4,8 @@ category: aero
 status: complete
 summary: "A flyable glider from salvaged RC-car electronics and a hand-made cardboard airframe."
 skills: ["Aerodynamics", "Weight distribution", "Material science", "Soldering & wiring", "Iterative design"]
-gallery: []
+thumbnail: "/photos/project-rc-glider.jpg"
+gallery: ["/photos/project-rc-glider.jpg"]
 featured: true
 order: 1
 date: 2025-11-10

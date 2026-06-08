@@ -4,6 +4,8 @@ category: robotics
 status: complete
 summary: "RC car on the EV3 brick with a stable Bluetooth link; tuned gear ratios for speed vs. torque."
 skills: ["EV3", "Bluetooth", "Gear ratios", "Debugging"]
+thumbnail: "/photos/project-lego-rc-car.jpg"
+gallery: ["/photos/project-lego-rc-car.jpg"]
 featured: true
 order: 2
 date: 2025-09-01

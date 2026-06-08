@@ -4,6 +4,8 @@ category: structures
 status: complete
 summary: "Large-scale mechanical builds — structure, stability, and spatial reasoning."
 skills: ["Mechanical design", "Spatial reasoning", "Patience"]
+thumbnail: "/photos/project-lego-collection.jpg"
+gallery: ["/photos/project-lego-collection.jpg"]
 order: 5
 date: 2024-12-01
 ---

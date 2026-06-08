@@ -15,7 +15,13 @@ const href = linked ? `/projects/${slug}` : undefined;
 ---
 
 <Tag class="card" href={href}>
-  <div class="card-art"><CategoryIcon category={data.category} /></div>
+  <div class="card-art">
+    {data.thumbnail ? (
+      <img src={data.thumbnail} alt={data.title} style="width: 100%; height: 100%; object-fit: cover; display: block;" />
+    ) : (
+      <CategoryIcon category={data.category} />
+    )}
+  </div>
   <div class="card-body">
     <div class="ptag">{tag}<span class={`pstat ${data.status}`}>{statusLabel}</span></div>
     <h3>{data.title}</h3>

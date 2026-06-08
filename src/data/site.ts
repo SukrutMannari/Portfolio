@@ -28,7 +28,6 @@ export const CATEGORIES = [
   { key: 'aero', label: 'Aeronautics & Flight' },
   { key: 'robotics', label: 'Robotics & Control' },
   { key: 'electronics', label: 'Electronics & Microcontrollers' },
-  { key: 'cad', label: 'CAD & Design' },
   { key: 'automation', label: 'Smart Home & Automation' },
   { key: 'ai', label: 'AI & Autonomy' },
   { key: 'structures', label: 'Structures & Mechanical' },
@@ -42,7 +41,7 @@ export const CATEGORY_LABEL: Record<string, string> = Object.fromEntries(
 export const TOOLBOX: Record<string, { label: string; items: string[] }> = {
   engineering: {
     label: 'ENGINEERING TOOLKIT',
-    items: ['Fusion 360', 'Arduino', 'Lego EV3', 'Proxmox', 'Home Assistant', 'Z-Wave', 'C++'],
+    items: ['Arduino', 'Lego EV3', 'Proxmox', 'Home Assistant', 'Z-Wave', 'C++'],
   },
   code: { label: 'STACK', items: ['Python', 'JavaScript', 'PyScript', 'HTML5 Canvas', 'Git'] },
   academics: {

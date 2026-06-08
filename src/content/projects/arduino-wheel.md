@@ -4,6 +4,12 @@ category: electronics
 status: complete
 summary: "Unojoy build reading analog rotation and mapping it to a PC game-controller axis."
 skills: ["Arduino", "C++", "Analog I/O", "Device interfacing"]
+thumbnail: "/photos/steering_wheel_joycon.jpg"
+gallery:
+  - "/photos/steering_wheel_joycon.jpg"
+  - "/photos/steering_wheel_buttons.jpg"
+  - "/photos/steering_wheel_arduino.jpg"
+  - "/photos/steering_wheel_potentiometer.jpg"
 featured: true
 order: 3
 date: 2025-06-15
