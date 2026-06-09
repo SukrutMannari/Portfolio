@@ -28,40 +28,50 @@ graph TD
     classDef client fill:#1e293b,stroke:#38bdf8,stroke-width:2px,color:#f8fafc;
     classDef server fill:#0f172a,stroke:#1c6fb5,stroke-width:2px,color:#cbd5e1;
     classDef external fill:#1c1917,stroke:#e8590c,stroke-width:2px,color:#f8fafc;
+    classDef local fill:#27272a,stroke:#a1a1aa,stroke-width:2px,color:#f4f4f5;
 
-    subgraph Client [Browser / Frontend]
-        Visitor[Visitor / Public Page]:::client
-        AIGuide[AIGuide Chat Widget]:::client
-        Admin[Decap CMS /admin]:::client
+    subgraph LocalDev [Local Development Environment]
+        LocalBrowser[Local Browser http://localhost:4321]:::local
+        AstroDev[Astro Dev Server Port 4321]:::local
+        DecapProxy[Local CMS Proxy Port 8081]:::local
+        LocalFS[(Local Filesystem src/content/)]:::local
     end
 
-    subgraph Hosting [Cloudflare Pages & Edge Functions]
-        Static[Astro Static Pages / Assets]:::server
-        APIChat[/api/chat Serverless Function]:::server
-        APIFeedback[/api/ai-feedback Serverless Function]:::server
-        APIConfig[/api/config.yml Serverless Function]:::server
+    subgraph Cloud [Production Hosting - Cloudflare Pages]
+        Static[Astro Static Pages & Assets]:::server
+        APIChat[/api/chat Edge Function]:::server
+        APIFeedback[/api/ai-feedback Edge Function]:::server
+        APIConfig[/api/config.yml Edge Function]:::server
         APIAuth[/api/auth & /api/callback]:::server
     end
 
-    subgraph External [External APIs & Services]
+    subgraph ExtServices [External APIs & GitHub]
         Gemini[Google Gemini API]:::external
         GitHubRepo[(GitHub Repository)]:::external
         GitHubAuth[GitHub OAuth App]:::external
     end
 
-    %% Interactions
-    Visitor -->|Requests Site| Static
-    AIGuide -->|Chat Payload| APIChat
+    %% Local Environment Interactions
+    LocalBrowser -->|Requests Pages| AstroDev
+    LocalBrowser -->|Accesses CMS /admin| DecapProxy
+    DecapProxy -->|Writes Staged Changes| LocalFS
+    AstroDev -->|Loads Content / Hydrates UI| LocalFS
+    LocalFS -.->|git commit & push| GitHubRepo
+    GitHubRepo -.->|git pull / clone| LocalFS
+
+    %% Production Client Interactions
+    ProdBrowser[Production Browser sukrutmannari.com]:::client -->|Requests Page| Static
+    ProdBrowser -->|Accesses CMS /admin| APIConfig
+    ProdBrowser -->|Request Writing Coach| APIFeedback
+    APIFeedback -->|Evaluates Draft Text| Gemini
+
+    ProdAIGuide[Prod AIGuide Widget]:::client -->|Chat Payload| APIChat
     APIChat -->|1. Reads Collections Context| Static
     APIChat -->|2. Structured Prompts| Gemini
-    
-    Admin -->|Dynamic Configuration| APIConfig
-    Admin -->|Trigger Feedback| APIFeedback
-    APIFeedback -->|Evaluates Text| Gemini
-    
-    Admin -->|Init Auth| APIAuth
-    APIAuth <-->|OAuth Handshake| GitHubAuth
-    Admin -->|Commits Content Changes| GitHubRepo
+
+    APIConfig -->|CMS Login Init| APIAuth
+    APIAuth <-->|OAuth Authorization Handshake| GitHubAuth
+    ProdAdmin[Prod Admin CMS Console]:::client -->|Commits Content Changes| GitHubRepo
     GitHubRepo -->|Build & Deploy Hook| Static
 ```
 
