@@ -2,6 +2,7 @@
 title: "Winter Stage Band Concert"
 date: 2026-01-15
 category: music
+cover: "/photos/band_sax_solo.jpg"
 excerpt: "Held down the bass line as lead baritone sax."
 ---
 
