@@ -1,0 +1,248 @@
+---
+// src/components/games/AstroShooter.astro
+---
+
+<div class="game-stage" id="astro-container">
+  <div class="game-controls-bar">
+    <span class="game-score">Score: <b id="astro-score">0</b> | Lives: <b id="astro-lives">3</b></span>
+    <button class="game-start-btn" id="astro-start">START GAME</button>
+  </div>
+  <div class="canvas-wrapper">
+    <canvas id="astro-canvas" width="360" height="360"></canvas>
+    <div id="astro-overlay" class="canvas-overlay">Press START to Play</div>
+  </div>
+  <div class="dpad" id="astro-dpad">
+    <button class="up" data-key="w">↑</button>
+    <button class="left" data-key="a">←</button>
+    <button class="down" data-key="s">↓</button>
+    <button class="right" data-key="d">→</button>
+    <button class="shoot" data-key=" " style="grid-column: 1 / -1; margin-top: 5px;">SHOOT</button>
+  </div>
+</div>
+
+<script>
+  const canvas = document.getElementById('astro-canvas');
+  if (canvas) {
+    const ctx = canvas.getContext('2d');
+    const scoreEl = document.getElementById('astro-score');
+    const livesEl = document.getElementById('astro-lives');
+    const startBtn = document.getElementById('astro-start');
+    const overlay = document.getElementById('astro-overlay');
+    const dpad = document.getElementById('astro-dpad');
+
+    let loop = null;
+    let running = false;
+    let score = 0;
+    let lives = 3;
+    let frame = 0;
+
+    const player = { x: 180, y: 320, w: 20, h: 20, speed: 4 };
+    let bullets = [];
+    let enemies = [];
+
+    const keys = { w: false, a: false, s: false, d: false, space: false };
+
+    function reset() {
+      score = 0;
+      lives = 3;
+      frame = 0;
+      player.x = 180 - player.w / 2;
+      player.y = 320;
+      bullets = [];
+      enemies = [];
+      scoreEl.textContent = '0';
+      livesEl.textContent = '3';
+    }
+
+    function spawnEnemy() {
+      if (frame % Math.max(30, 100 - Math.floor(score / 50)) === 0) {
+        const w = 20 + Math.random() * 20;
+        enemies.push({
+          x: Math.random() * (canvas.width - w),
+          y: -40,
+          w,
+          h: w,
+          speed: 1.5 + Math.random() * 1.5 + (score / 500)
+        });
+      }
+    }
+
+    function checkCollision(r1, r2) {
+      return !(r2.x > r1.x + r1.w || 
+               r2.x + r2.w < r1.x || 
+               r2.y > r1.y + r1.h ||
+               r2.y + r2.h < r1.y);
+    }
+
+    function update() {
+      if (!running) return;
+      frame++;
+
+      // Player movement
+      if (keys.a && player.x > 0) player.x -= player.speed;
+      if (keys.d && player.x + player.w < canvas.width) player.x += player.speed;
+      if (keys.w && player.y > 0) player.y -= player.speed;
+      if (keys.s && player.y + player.h < canvas.height) player.y += player.speed;
+
+      // Bullets
+      for (let i = bullets.length - 1; i >= 0; i--) {
+        bullets[i].y -= bullets[i].speed;
+        if (bullets[i].y < 0) bullets.splice(i, 1);
+      }
+
+      // Enemies
+      spawnEnemy();
+      for (let i = enemies.length - 1; i >= 0; i--) {
+        enemies[i].y += enemies[i].speed;
+        
+        // Collision with player
+        if (checkCollision(player, enemies[i])) {
+          lives--;
+          livesEl.textContent = String(lives);
+          enemies.splice(i, 1);
+          if (lives <= 0) return gameOver();
+          continue;
+        }
+
+        // Collision with bullets
+        let enemyHit = false;
+        for (let j = bullets.length - 1; j >= 0; j--) {
+          if (checkCollision(bullets[j], enemies[i])) {
+            score += 10;
+            scoreEl.textContent = String(score);
+            bullets.splice(j, 1);
+            enemyHit = true;
+            break;
+          }
+        }
+
+        if (enemyHit) {
+          enemies.splice(i, 1);
+          continue;
+        }
+
+        // Off screen
+        if (enemies[i].y > canvas.height) {
+          enemies.splice(i, 1);
+        }
+      }
+
+      draw();
+      loop = requestAnimationFrame(update);
+    }
+
+    function draw() {
+      // Clear
+      ctx.fillStyle = '#0A1B2B';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      // Draw stars
+      ctx.fillStyle = 'rgba(255,255,255,0.3)';
+      for(let i=0; i<20; i++) {
+        ctx.fillRect((frame * 0.1 + i*37) % canvas.width, (frame * 0.5 + i*83) % canvas.height, 2, 2);
+      }
+
+      // Draw Player
+      ctx.fillStyle = 'var(--blue)';
+      ctx.beginPath();
+      ctx.moveTo(player.x + player.w / 2, player.y);
+      ctx.lineTo(player.x + player.w, player.y + player.h);
+      ctx.lineTo(player.x, player.y + player.h);
+      ctx.fill();
+
+      // Draw Bullets
+      ctx.fillStyle = 'var(--orange)';
+      bullets.forEach(b => ctx.fillRect(b.x, b.y, b.w, b.h));
+
+      // Draw Enemies
+      ctx.fillStyle = '#C92A2A';
+      enemies.forEach(e => {
+        ctx.fillRect(e.x, e.y, e.w, e.h);
+      });
+    }
+
+    function start() {
+      reset();
+      running = true;
+      startBtn.textContent = 'RESTART';
+      overlay.style.display = 'none';
+      if (loop) cancelAnimationFrame(loop);
+      update();
+    }
+
+    function gameOver() {
+      running = false;
+      startBtn.textContent = 'START GAME';
+      overlay.style.display = 'grid';
+      overlay.innerHTML = 'GAME OVER<br>Score: ' + score + '<br><span style="font-size:11px;color:rgba(255,255,255,0.6)">Press START to Play again</span>';
+    }
+
+    function shoot() {
+      if (!running) return;
+      if (bullets.length < 5) {
+        bullets.push({
+          x: player.x + player.w / 2 - 2,
+          y: player.y,
+          w: 4,
+          h: 12,
+          speed: 8
+        });
+      }
+    }
+
+    // Controls
+    document.addEventListener('keydown', (e) => {
+      const pane = document.getElementById('pane-astro-shooter');
+      if (!pane || !pane.classList.contains('active') || !running) return;
+      
+      const k = e.key.toLowerCase();
+      if (k === 'w' || k === 'arrowup') keys.w = true;
+      if (k === 'a' || k === 'arrowleft') keys.a = true;
+      if (k === 's' || k === 'arrowdown') keys.s = true;
+      if (k === 'd' || k === 'arrowright') keys.d = true;
+      if (k === ' ') {
+        e.preventDefault();
+        if (!keys.space) shoot();
+        keys.space = true;
+      }
+    });
+
+    document.addEventListener('keyup', (e) => {
+      const k = e.key.toLowerCase();
+      if (k === 'w' || k === 'arrowup') keys.w = false;
+      if (k === 'a' || k === 'arrowleft') keys.a = false;
+      if (k === 's' || k === 'arrowdown') keys.s = false;
+      if (k === 'd' || k === 'arrowright') keys.d = false;
+      if (k === ' ') keys.space = false;
+    });
+
+    dpad.querySelectorAll('button').forEach(b => {
+      b.addEventListener('pointerdown', (e) => {
+        e.preventDefault();
+        const k = b.getAttribute('data-key');
+        if (k === 'w') keys.w = true;
+        if (k === 'a') keys.a = true;
+        if (k === 's') keys.s = true;
+        if (k === 'd') keys.d = true;
+        if (k === ' ') shoot();
+      });
+      b.addEventListener('pointerup', (e) => {
+        e.preventDefault();
+        const k = b.getAttribute('data-key');
+        if (k === 'w') keys.w = false;
+        if (k === 'a') keys.a = false;
+        if (k === 's') keys.s = false;
+        if (k === 'd') keys.d = false;
+      });
+      b.addEventListener('pointerleave', (e) => {
+        const k = b.getAttribute('data-key');
+        if (k === 'w') keys.w = false;
+        if (k === 'a') keys.a = false;
+        if (k === 's') keys.s = false;
+        if (k === 'd') keys.d = false;
+      });
+    });
+
+    startBtn.addEventListener('click', start);
+  }
+</script>

@@ -1,0 +1,226 @@
+---
+// src/components/games/TowerDefense.astro
+---
+
+<div class="game-stage" id="tower-container">
+  <div class="game-controls-bar">
+    <span class="game-score">Gold: <b id="tower-gold">100</b> | Base Health: <b id="tower-health">10</b></span>
+    <button class="game-start-btn" id="tower-start">START GAME</button>
+  </div>
+  <div class="canvas-wrapper">
+    <canvas id="tower-canvas" width="360" height="360"></canvas>
+    <div id="tower-overlay" class="canvas-overlay">Press START to Play</div>
+  </div>
+  <div class="tower-note" style="padding: 10px; font-size: 11px; text-align: center; color: var(--ink-dim)">
+    Click on the grid to build Turrets (Cost: 50 Gold). They will auto-fire at enemies!
+  </div>
+</div>
+
+<script>
+  const canvas = document.getElementById('tower-canvas');
+  if (canvas) {
+    const ctx = canvas.getContext('2d');
+    const goldEl = document.getElementById('tower-gold');
+    const healthEl = document.getElementById('tower-health');
+    const startBtn = document.getElementById('tower-start');
+    const overlay = document.getElementById('tower-overlay');
+
+    let loop = null;
+    let running = false;
+    let frame = 0;
+    
+    let gold = 100;
+    let baseHealth = 10;
+    let wave = 1;
+
+    const pathY = 160;
+    const pathH = 40;
+
+    let turrets = [];
+    let enemies = [];
+    let bullets = [];
+
+    function reset() {
+      gold = 100;
+      baseHealth = 10;
+      wave = 1;
+      frame = 0;
+      turrets = [];
+      enemies = [];
+      bullets = [];
+      goldEl.textContent = '100';
+      healthEl.textContent = '10';
+    }
+
+    function spawnEnemy() {
+      if (frame % Math.max(40, 150 - wave * 10) === 0) {
+        enemies.push({
+          x: -20,
+          y: pathY + 10,
+          w: 20,
+          h: 20,
+          hp: 20 + wave * 5,
+          maxHp: 20 + wave * 5,
+          speed: 1 + wave * 0.1
+        });
+      }
+      if (frame % 600 === 0) wave++; // Increase difficulty over time
+    }
+
+    function update() {
+      if (!running) return;
+      frame++;
+      spawnEnemy();
+
+      // Update Bullets
+      for (let i = bullets.length - 1; i >= 0; i--) {
+        const b = bullets[i];
+        const dx = b.tx - b.x;
+        const dy = b.ty - b.y;
+        const dist = Math.sqrt(dx * dx + dy * dy);
+        
+        if (dist < b.speed) {
+          // Hit!
+          if (b.target && enemies.includes(b.target)) {
+            b.target.hp -= 10;
+          }
+          bullets.splice(i, 1);
+          continue;
+        }
+
+        b.x += (dx / dist) * b.speed;
+        b.y += (dy / dist) * b.speed;
+      }
+
+      // Update Enemies
+      for (let i = enemies.length - 1; i >= 0; i--) {
+        const e = enemies[i];
+        e.x += e.speed;
+
+        if (e.hp <= 0) {
+          gold += 15;
+          goldEl.textContent = String(gold);
+          enemies.splice(i, 1);
+          continue;
+        }
+
+        if (e.x > canvas.width) {
+          baseHealth--;
+          healthEl.textContent = String(baseHealth);
+          enemies.splice(i, 1);
+          if (baseHealth <= 0) return gameOver();
+        }
+      }
+
+      // Update Turrets (Auto-fire)
+      turrets.forEach(t => {
+        if (frame % 30 === 0) {
+          // Find closest enemy
+          let closest = null;
+          let minDist = 120; // Range
+          enemies.forEach(e => {
+            const dx = (e.x + e.w/2) - (t.x + 15);
+            const dy = (e.y + e.h/2) - (t.y + 15);
+            const dist = Math.sqrt(dx*dx + dy*dy);
+            if (dist < minDist) {
+              minDist = dist;
+              closest = e;
+            }
+          });
+
+          if (closest) {
+            bullets.push({
+              x: t.x + 15,
+              y: t.y + 15,
+              tx: closest.x + closest.w/2,
+              ty: closest.y + closest.h/2,
+              speed: 8,
+              target: closest
+            });
+          }
+        }
+      });
+
+      draw();
+      loop = requestAnimationFrame(update);
+    }
+
+    function draw() {
+      // Background
+      ctx.fillStyle = '#6E8B3D'; // Grass
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      // Path
+      ctx.fillStyle = '#D2B48C'; // Dirt
+      ctx.fillRect(0, pathY, canvas.width, pathH);
+
+      // Base
+      ctx.fillStyle = '#333';
+      ctx.fillRect(canvas.width - 40, pathY - 20, 40, 80);
+
+      // Turrets
+      ctx.fillStyle = '#1C6FB5';
+      turrets.forEach(t => {
+        ctx.fillRect(t.x, t.y, 30, 30);
+        // Turret gun barrel
+        ctx.fillStyle = '#155A95';
+        ctx.fillRect(t.x + 10, t.y + 10, 10, 10);
+        ctx.fillStyle = '#1C6FB5';
+      });
+
+      // Enemies
+      enemies.forEach(e => {
+        ctx.fillStyle = '#E8590C'; // Red/Orange enemy
+        ctx.fillRect(e.x, e.y, e.w, e.h);
+        
+        // Health bar
+        ctx.fillStyle = '#000';
+        ctx.fillRect(e.x, e.y - 6, e.w, 4);
+        ctx.fillStyle = '#0f0';
+        ctx.fillRect(e.x, e.y - 6, e.w * (Math.max(0, e.hp) / e.maxHp), 4);
+      });
+
+      // Bullets
+      ctx.fillStyle = '#FFD700';
+      bullets.forEach(b => {
+        ctx.beginPath();
+        ctx.arc(b.x, b.y, 3, 0, Math.PI * 2);
+        ctx.fill();
+      });
+    }
+
+    function start() {
+      reset();
+      running = true;
+      startBtn.textContent = 'RESTART';
+      overlay.style.display = 'none';
+      if (loop) cancelAnimationFrame(loop);
+      update();
+    }
+
+    function gameOver() {
+      running = false;
+      startBtn.textContent = 'START GAME';
+      overlay.style.display = 'grid';
+      overlay.innerHTML = 'GAME OVER<br>Wave Reached: ' + wave + '<br><span style="font-size:11px;color:rgba(255,255,255,0.6)">Press START to Play again</span>';
+    }
+
+    canvas.addEventListener('click', (e) => {
+      if (!running) return;
+      const rect = canvas.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+
+      // Don't place on path
+      if (y > pathY - 30 && y < pathY + pathH) return;
+
+      if (gold >= 50) {
+        gold -= 50;
+        goldEl.textContent = String(gold);
+        turrets.push({ x: x - 15, y: y - 15 });
+      }
+    });
+
+    startBtn.addEventListener('click', start);
+  }
+</script>

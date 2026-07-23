@@ -18,7 +18,7 @@ export const NAV = [
   { label: 'Leadership', href: '/leadership' },
   { label: 'Music', href: '/music' },
   { label: 'Journal', href: '/journal' },
-  { label: 'Résumé ↓', href: '/resume.pdf', resume: true },
+  // { label: 'Résumé ↓', href: '/resume.pdf', resume: true },
   { label: '✎ Admin', href: '/admin/', admin: true },
 ];
 

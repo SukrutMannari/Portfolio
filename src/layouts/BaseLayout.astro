@@ -2,6 +2,7 @@
 import '../styles/global.css';
 import Nav from '../components/Nav.astro';
 import Footer from '../components/Footer.astro';
+import { ViewTransitions } from 'astro:transitions';
 import { SITE } from '../data/site';
 import AIGuide from '../components/AIGuide.astro';
 
@@ -41,6 +42,26 @@ const pageTitle = title ? `${title} · ${SITE.name}` : `${SITE.name} — Aspirin
         <script type="module" src="https://pyscript.net/releases/2024.1.1/core.js" is:inline></script>
       </>
     )}
+    <ViewTransitions />
+    <script is:inline>
+      const getTheme = () => {
+        if (typeof localStorage !== 'undefined' && localStorage.getItem('theme')) {
+          return localStorage.getItem('theme');
+        }
+        return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+      };
+      
+      const setTheme = () => {
+        if (getTheme() === 'dark') {
+          document.documentElement.classList.add('dark');
+        } else {
+          document.documentElement.classList.remove('dark');
+        }
+      };
+
+      setTheme();
+      document.addEventListener('astro:after-swap', setTheme);
+    </script>
   </head>
   <body>
     <!-- Edit-preview toggle: hidden for visitors; appears only when ?edit is in the URL. -->
