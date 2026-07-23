@@ -73,20 +73,20 @@
 
 <script is:inline>
   document.addEventListener('DOMContentLoaded', () => {
-    const startBtn = document.getElementById('planesim-start');
-    if (!startBtn) return;
-    startBtn.addEventListener('click', initSim);
+    // Pre-initialize the engine immediately on load
+    setTimeout(initSim, 100);
 
     function initSim() {
-      document.getElementById('planesim-overlay').style.display = 'none';
-      document.getElementById('planesim-hud').style.display = 'block';
+      const overlay = document.getElementById('planesim-overlay');
+      if(overlay) overlay.style.display = 'none';
+      const hud = document.getElementById('planesim-hud');
+      if(hud) hud.style.display = 'block';
 
       const container = document.getElementById('planesim-container');
       const canvas = document.getElementById('planesim-canvas');
-      canvas.focus();
       
-      const width = container.clientWidth;
-      const height = container.clientHeight;
+      const width = container.clientWidth || 800;
+      const height = container.clientHeight || 500;
 
       const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: false });
       renderer.setSize(width, height);
@@ -556,6 +556,13 @@
       const clock = new THREE.Clock();
       function animate() {
         requestAnimationFrame(animate);
+        
+        // Pause physics and rendering if the game stage is not visible (e.g. another tab is active)
+        if (container.offsetParent === null) {
+          clock.getDelta(); // keep clock ticking so dt doesn't jump
+          return;
+        }
+
         const dt = Math.min(clock.getDelta(), 0.1);
         
         updatePhysics(dt);
