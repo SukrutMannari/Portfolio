@@ -13,6 +13,10 @@ gallery:
   - "/photos/planes_4.png"
 ---
 
-# Simulation Airframe Builds
+## Flight Mechanics & Virtual Testing
 
-I spent time designing and simulating custom airframes to understand aerodynamics, lift, and drag characteristics. These simulations helped me refine my designs before constructing physical models, ensuring better flight stability and performance.
+I spent time designing and simulating custom airframes to deeply understand aerodynamics, lift, and drag characteristics. These simulations are a crucial first step before constructing any physical RC gliders or planes.
+
+Using virtual physics simulators, I manipulated complex flight mechanics variables. I modeled different **wing aspect ratios** to balance lift against structural weight, and analyzed the **center-of-lift** relative to the weight distribution. A major part of the virtual testing involved adjusting **wing dihedral angles** to achieve passive lateral stability, ensuring the aircraft would naturally want to fly level without constant control inputs. 
+
+These simulations helped me refine my designs mathematically, ensuring much better flight stability and performance when transitioning to physical models.

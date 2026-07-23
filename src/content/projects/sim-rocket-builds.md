@@ -15,10 +15,15 @@ order: 17
 date: 2026-06-05
 ---
 
-## The Challenge
+## The Challenge & Aerodynamic Concepts
 
-Optimizing the flight parameters, center of pressure, and weight distribution of model rockets in virtual simulations before committing to physical assembly and launches.
+Before committing to physical assembly and launches, I wanted to optimize the flight parameters of my model rockets. The core engineering challenge in rocketry is ensuring flight stability, which means carefully balancing the **Center of Pressure (CP)** against the **Center of Gravity (CG)**.
 
-## The Process
+## Virtual Testing & Simulated Variables
 
-I designed multiple virtual rocket configurations in OpenRocket, selecting different engines, fin shapes, and nose cone profiles. Running simulations helped verify flight stability, drag coefficients, and maximum expected altitudes.
+Using the OpenRocket software suite, I designed multiple virtual rocket configurations to test aerodynamic theories safely and cheaply. I manipulated several key variables in the simulations:
+- **Motor Impulses:** Comparing the thrust curves of different engines (e.g., Estes C6-5 vs. D12-5) to maximize apogee altitude safely.
+- **Fin Shapes:** Testing trapezoidal versus elliptical fin profiles to observe their effect on the center of pressure.
+- **Nose Cone Profiles:** Analyzing different nose cone shapes to minimize drag coefficients.
+
+By running these simulations, I was able to mathematically verify the flight stability of my designs and confidently predict their maximum expected altitudes before a single physical part was ever cut.

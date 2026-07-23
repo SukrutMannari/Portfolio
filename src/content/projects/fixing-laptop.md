@@ -12,15 +12,12 @@ gallery:
 order: 9
 date: 2026-07-20
 ---
+## Troubleshooting Steps
 
-## Problem
+1. **Diagnosis:** I started by diagnosing unresponsive keys on my laptop. By testing the inputs, I isolated the issue and identified a damaged connection ribbon cable between the keyboard and the motherboard.
+2. **Sourcing:** After researching the specific laptop model and the type of ribbon connector used, I determined that replacing the entire keyboard assembly was the most effective fix, and I sourced a compatible replacement.
+3. **Disassembly & Repair:** I carefully disassembled the laptop casing. Crucially, I disconnected the battery first for safety, applied anti-static precautions, unseated the fragile motherboard ribbon connectors, and successfully swapped the component.
 
-The cable connecting my keyboard to the computer was damaged, resulting in a complete loss of input connection.
+## Key Skills Learned
 
-## Solution
-
-After diagnosing the faulty cable, I determined that replacing the entire keyboard was the most effective fix. I acquired a compatible replacement, connected the new peripheral, and tested it to ensure all keystrokes and inputs registered correctly.
-
-## Result
-
-The computer is fully functional again with a reliable, working keyboard.
+Beyond just getting the computer fully functional again, this repair taught me precision hardware handling, the importance of anti-static precautions, and gave me the confidence to independently troubleshoot and repair consumer electronics.

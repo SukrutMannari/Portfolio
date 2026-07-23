@@ -62,16 +62,12 @@ const categoryLabel = CATEGORY_LABEL[data.category] ?? data.category;
           )
         }
 
-        <h2>Gallery</h2>
         {
-          data.gallery && data.gallery.length > 0 ? (
-            <Gallery images={data.gallery} alt={data.title} />
-          ) : (
-            <div class="gallery">
-              <div class="ph">PHOTO</div>
-              <div class="ph">PHOTO</div>
-              <div class="ph">PHOTO</div>
-            </div>
+          data.gallery && data.gallery.length > 0 && (
+            <>
+              <h2>Gallery</h2>
+              <Gallery images={data.gallery} alt={data.title} />
+            </>
           )
         }
       </div>

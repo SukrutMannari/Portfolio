@@ -7,11 +7,10 @@ skills: ["Linux", "GRUB", "Partitioning", "System Administration"]
 order: 10
 date: 2026-04-10
 ---
+## The Process & Partitioning
 
-## The Challenge
+I needed to set up a fully functional Linux operating system alongside Windows on my primary computer without losing any personal data or messing up the boot sequence. To accomplish this safely, I shrank my Windows partition using Disk Management to free up space, created custom swap and root (`/`) partitions, and installed Linux. Finally, I configured the GRUB bootloader to offer a seamless choice between Windows and Linux at startup.
 
-To set up a fully functional Linux operating system alongside Windows on my primary computer without losing any personal data or messing up the boot sequence.
+## Why It Matters
 
-## The Process
-
-I shrank my Windows partition to free up space, set up custom swap and root partitions, installed Linux, and configured the GRUB bootloader to offer a choice between Windows and Linux at startup.
+Having a dedicated, bare-metal Linux environment is critical for my engineering goals. It gives me native access to powerful terminal tools, shell scripting capabilities, and the Robot Operating System (ROS), all while keeping my Windows environment intact for gaming and general use.
