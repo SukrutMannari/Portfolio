@@ -16,7 +16,7 @@
       <div style="margin-top:28px; font-size:12px; text-align:left; background:rgba(255,255,255,0.05); padding:16px; border-radius:6px; border:1px solid var(--line); display:inline-block;">
         <b style="color:var(--orange);">FLIGHT CONTROLS</b><br/><br/>
         <table style="color:#cbd5e1; border-spacing:8px 4px;">
-          <tr><td><b>W / S</b></td><td>: Pitch Up / Down</td></tr>
+          <tr><td><b>W / S</b></td><td>: Pitch Down / Up</td></tr>
           <tr><td><b>A / D</b></td><td>: Roll Left / Right</td></tr>
           <tr><td><b>SHIFT / CTRL</b></td><td>: Throttle Up / Down</td></tr>
           <tr><td><b>C</b></td><td>: Toggle Camera View</td></tr>
@@ -498,8 +498,8 @@
         if(keys['control']) state.throttle = Math.max(0, state.throttle - 0.5 * dt);
         
         let targetPitch = 0;
-        if(keys['w']) targetPitch = 1;  // W = Nose Up
-        if(keys['s']) targetPitch = -1; // S = Nose Down
+        if(keys['w']) targetPitch = -1;  // W = Nose Down
+        if(keys['s']) targetPitch = 1; // S = Nose Up
         state.pitchInput = THREE.MathUtils.lerp(state.pitchInput, targetPitch, dt * 5);
 
         let targetRoll = 0;
