@@ -1,0 +1,91 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout title="Resume">
+  <div class="page-head">
+    <div class="label">// RESUME</div>
+    <h1 data-edit>My Experience & Skills</h1>
+    <p data-edit>An overview of my academics, technical projects, music performances, and leadership roles.</p>
+  </div>
+
+  <section>
+    <div class="label">// EDUCATION</div>
+    <div class="resume-section">
+      <h3>Middle School</h3>
+      <p>Honor Roll student with straight A / A- average in all STEM subjects.</p>
+      <ul>
+        <li>National Junior Honor Society (NJHS) Inductee</li>
+        <li>Accelerated Math Progression: Russian School of Math (Algebra Honors & Geometry)</li>
+      </ul>
+    </div>
+  </section>
+
+  <section>
+    <div class="label">// TECHNICAL SKILLS</div>
+    <div class="resume-section">
+      <ul>
+        <li><strong>Programming:</strong> HTML, CSS, JavaScript, Astro, C++ (Arduino), Python (Basic)</li>
+        <li><strong>Hardware & Electronics:</strong> Arduino, Raspberry Pi, Custom PCB design, Soldering, RC Vehicles</li>
+        <li><strong>Systems:</strong> Linux (Ubuntu/Debian double boot), Home Assistant, Remote Desktop, Networking</li>
+        <li><strong>Tools:</strong> Git, VS Code, CAD/Simulation tools for airframes and rockets</li>
+      </ul>
+    </div>
+  </section>
+
+  <section>
+    <div class="label">// PROJECTS & ENGINEERING</div>
+    <div class="resume-section">
+      <ul>
+        <li><strong>RC Plane & Glider:</strong> Built and programmed remote-controlled aircraft from scratch.</li>
+        <li><strong>Arduino Racing Wheel:</strong> Designed and programmed a custom racing wheel with force feedback capability.</li>
+        <li><strong>Home Automation:</strong> Deployed a local Home Assistant server to control smart devices.</li>
+        <li><strong>Web Development:</strong> Built personal portfolio and mock testing sites for peers using Lovable.</li>
+        <li><strong>Hardware Troubleshooting:</strong> Successfully diagnosed and repaired laptop keyboard input issues.</li>
+      </ul>
+    </div>
+  </section>
+
+  <section>
+    <div class="label">// LEADERSHIP & SERVICE</div>
+    <div class="resume-section">
+      <ul>
+        <li><strong>NJHS Homework Help:</strong> Leading homework help sessions for peers.</li>
+        <li><strong>Community Library:</strong> Volunteered over 35 hours assisting with book organization and events.</li>
+        <li><strong>FIRST Lego League:</strong> Organized a school-wide FLL club to teach robotics.</li>
+      </ul>
+    </div>
+  </section>
+
+  <section>
+    <div class="label">// MUSIC & EXTRACURRICULARS</div>
+    <div class="resume-section">
+      <ul>
+        <li><strong>Stage Band (Baritone Saxophone):</strong> Lead Baritone, performed at Winter/Spring Concerts and District Jazz Night.</li>
+        <li><strong>Taekwondo:</strong> 2nd Degree Black Belt, actively participating in tournaments and belt test assistance.</li>
+      </ul>
+    </div>
+  </section>
+
+  <style>
+    .resume-section {
+      background: var(--paper-2);
+      border: 1px solid var(--line);
+      padding: 24px;
+      border-radius: 6px;
+      margin-bottom: 24px;
+    }
+    .resume-section h3 {
+      margin-top: 0;
+      color: var(--blue);
+    }
+    .resume-section ul {
+      margin: 12px 0 0;
+      padding-left: 20px;
+    }
+    .resume-section li {
+      margin-bottom: 8px;
+      line-height: 1.5;
+    }
+  </style>
+</BaseLayout>

@@ -4,6 +4,9 @@ category: "automation"
 status: "complete"
 summary: "Deploying Home Assistant on our home server to integrate smart sensors, lighting, and automation rules."
 skills: ["Home Assistant", "Smart home", "Networking", "YAML configuration"]
+thumbnail: "/photos/home_assistant_1.png"
+gallery:
+  - "/photos/home_assistant_1.png"
 order: 15
 date: 2026-02-15
 ---

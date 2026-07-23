@@ -4,6 +4,13 @@ category: "aero"
 status: "in-progress"
 summary: "Designing and running simulations for model rocket builds using OpenRocket to optimize flight stability and altitude."
 skills: ["OpenRocket", "Flight simulation", "Aerodynamics", "Model rocketry"]
+thumbnail: "/photos/rocket_1.png"
+gallery:
+  - "/photos/rocket_1.png"
+  - "/photos/rocket_2.png"
+  - "/photos/rocket_3.png"
+  - "/photos/rocket_4.png"
+  - "/photos/rocket_5.png"
 order: 17
 date: 2026-06-05
 ---

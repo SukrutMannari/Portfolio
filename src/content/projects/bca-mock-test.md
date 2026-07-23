@@ -4,6 +4,11 @@ category: "ai"
 status: "complete"
 summary: "Creating an interactive online mock entrance test website for Bergen County Academies (BCA) using Lovable's AI platform."
 skills: ["Prompt engineering", "Web development", "Lovable", "UI/UX design"]
+thumbnail: "/photos/bca_mock_test_1.png"
+gallery:
+  - "/photos/bca_mock_test_1.png"
+  - "/photos/bca_mock_test_2.png"
+  - "/photos/bca_mock_test_3.png"
 order: 13
 date: 2026-05-10
 ---
