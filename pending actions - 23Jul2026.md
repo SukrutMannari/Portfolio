@@ -1,66 +1,43 @@
-# 📋 Portfolio Pending Actions & BCA Admissions Audit (Refreshed 23 Jul 2026)
+# 📋 Portfolio Pending Actions & BCA Admissions Upgrade Guide (23 Jul 2026)
 
-This document provides a **refreshed assessment** of Sukrut's portfolio website following his latest content updates (`commit 410105c`).
+This document contains **only the remaining active pending actions** and strategic upgrade recommendations to prepare Sukrut's portfolio website for publication and maximum impact with the **Bergen County Academies (BCA) Admissions Panel**.
 
----
-
-## 🎉 Refresh Summary: 13 of 14 Tasks Completed!
-
-Sukrut has completed **93% of all open action items**, adding stellar technical depth, engineering problem-solving narratives, and multidisciplinary balance across the entire site.
-
-- ✅ **Hardware & Gaming Wheel**: Updated `arduino-projects.md` with V1 vs V2 redesign (>270° potentiometer, shifter assembly, custom joycon button wiring, C++ code).
-- ✅ **Networking & India Trip**: Updated `remote-access.md` detailing Wake-on-LAN (remote boot magic packets), dynamic DNS, SSH key authentication, and logging into his Orion PC from India.
-- ✅ **Hardware Repair**: Updated `fixing-laptop.md` detailing step-by-step troubleshooting, ribbon cable diagnosis, battery disconnect safety, anti-static precautions, and hardware confidence.
-- ✅ **Music & Saxophone Leadership**: Updated all 4 performance articles (`spring-concert-2026`, `winter-concert-2026`, `district-jazz-night-2026`, `teen-arts-festival-2026`) detailing the Baritone Saxophone's role as the sonic/harmonic foundation for the stage band and jazz ensemble.
-- ✅ **AI & Web Apps**: Updated `bca-mock-test.md` detailing peer motivation, prompt engineering in Lovable, and timed exam features.
-- ✅ **Systems & Aero Simulations**: Updated `linux-double-boot.md` (swap/root `/` partitions, GRUB, ROS), `sim-rocket-builds.md` (OpenRocket CP vs CG stability, motor impulse), `sim-airframe-builds.md` (wing aspect ratios, dihedral angles), and `home-assistant-setup.md` (local control, YAML automations).
-- ⭐ **Bonus Feature Added**: Built and integrated **3 interactive game mini-apps** (`PlaneSim`, `AstroShooter`, `TowerDefense`) under `src/components/games/`!
+> [!NOTE]
+> All 13 previously logged content and media tasks (including steering wheel V1 vs V2, Orion PC remote boot for India trip, laptop repair story, saxophone stage band logs, OpenRocket simulations, and automated image compression) have been completed and verified.
 
 ---
 
-## 🏛️ BCA Admissions Panel Strategic Evaluation
+## 🎯 Active Pending Actions Checklist
 
-| BCA Evaluation Criteria | Sukrut's Updated Portfolio Post-Pull | Status |
-| :--- | :--- | :---: |
-| **Technical Initiative & Self-Directed Learning** | Explains self-driven motivations behind Linux dual boot, Home Assistant local privacy, and custom game controller hardware builds. | 🟢 **Excellent** |
-| **Problem Solving & Engineering Resilience** | Clear step-by-step troubleshooting in laptop repair, Steering Wheel V1 to V2 iterative redesign, and Wake-on-LAN remote access from India. | 🟢 **Excellent** |
-| **Community Impact & Peer Leadership** | Explains building the BCA Mock Test tool to help classmates practice under exam pressure without costly software. | 🟢 **Excellent** |
-| **Multidisciplinary Balance** | Demonstrates discipline and teamwork across Baritone Saxophone stage band leadership, Taekwondo Black Belt, and STEM projects. | 🟢 **Excellent** |
+Use this checklist to track all remaining open tasks before launching live.
 
----
-
-## 🎯 Refreshed Actionable Task Checklist
-
-### Section A: Remaining Open Action Item
+### Section A: Content & Portfolio Additions
 
 | Status | Task ID | Category | Item | Core Action Required | Priority |
 | :---: | :--- | :--- | :--- | :--- | :---: |
-| [ ] | **CS-01** | CS / AI | **Mock NJSLA Test Site** | Create `src/content/projects/njsla-mock-test.md` using Lovable. Include problem statement, features, and test simulator screenshot. | 🔴 High |
+| [ ] | **CS-01** | CS / AI | **Mock NJSLA Test Site** | Create `src/content/projects/njsla-mock-test.md` using Lovable. Include problem statement (helping classmates prepare), features (timer, score calculator), and test simulator screenshot. | 🔴 High |
 
 ---
 
-### Section B: Completed Tasks Audit Log
+### Section B: BCA Admissions Panel Strategic Upgrades
 
-| Status | Task ID | Category | Item | Verification Result |
-| :---: | :--- | :--- | :--- | :--- |
-| [x] | **HW-01** | Hardware | **Gaming Steering Wheel & Shifter** | ✅ **Passed**. Excellent V1 vs V2 iteration narrative and C++ HID details in `arduino-projects.md`. |
-| [x] | **NET-01**| Networking | **Orion PC Remote Boot (India Trip)** | ✅ **Passed**. Detailed Wake-on-LAN magic packets, dynamic DNS, and India trip access in `remote-access.md`. |
-| [x] | **HW-02** | Hardware Repair | **Laptop Keyboard Repair Story** | ✅ **Passed**. Detailed 3-step troubleshooting, ribbon cable diagnosis, and safety precautions in `fixing-laptop.md`. |
-| [x] | **MUS-01**| Music | **Music Articles Narrative** | ✅ **Passed**. High-quality narrative added to all 4 performance articles emphasizing Baritone Saxophone leadership. |
-| [x] | **MUS-02**| Music | **Teen Arts Festival Link** | ✅ **Passed**. Included Teen Arts program brochure reference and performance highlight note. |
-| [x] | **ENG-01**| Engineering | **Linux Double Boot** | ✅ **Passed**. Detailed partition layout (swap, root `/`), GRUB, and ROS terminal tools in `linux-double-boot.md`. |
-| [x] | **ENG-02**| CS / AI | **Mock BCA Test Site** | ✅ **Passed**. Added peer motivation, prompt engineering in Lovable, and 3 key features to `bca-mock-test.md`. |
-| [x] | **ENG-03**| Aerodynamics | **Simulation Rocket Builds** | ✅ **Passed**. Detailed OpenRocket CP vs CG stability, motor impulse selection, and apogee predictions. |
-| [x] | **ENG-04**| Aerodynamics | **Simulation Airframe Builds** | ✅ **Passed**. Added wing aspect ratios, center-of-lift, and dihedral angles in `sim-airframe-builds.md`. |
-| [x] | **ENG-05**| Systems | **Home Assistant Integration** | ✅ **Passed**. Added local privacy motivation, Proxmox VM deployment, and YAML automations. |
-| [x] | **ENG-06**| Web Dev | **Website Setup via Antigravity** | ✅ **Passed**. Detailed Astro static site generator, Tailwind CSS, Decap CMS, and AI pair programming. |
-| [x] | **RES-01**| Resume | **Resume Page Verification** | ✅ **Passed**. Verified `/resume` page structure and formatting. |
-| [x] | **IMG-01**| Media | **Automated Image Optimization** | ✅ **Passed**. Saved >70.6 MB across 20 high-res photos. |
+These recommendations are designed to make Sukrut's portfolio stand out to BCA admissions officers (specifically for **ATCS** - Tech & Computer Science, and **AEDT** - Engineering & Design Tech):
+
+| Status | Task ID | Category | Item | Recommended Action | Priority |
+| :---: | :--- | :--- | :--- | :--- | :---: |
+| [ ] | **BCA-01** | Engineering | **Engineering Debug Callouts** | Add an explicit *"Failure & Debug Log"* callout box to top projects (`arduino-projects`, `fixing-laptop`, `remote-access`) highlighting what failed during testing and how it was fixed. | 🔴 High |
+| [ ] | **BCA-02** | UI / UX | **At-a-Glance Impact Stats** | Add a 4-card metric banner on Home or About page: **15+** Engineering/Aero Sims, **35+** Library Volunteer Hours, **6+** Years Taekwondo (2nd Degree Black Belt), **3 Years** Lead Baritone Saxophone. | 🔴 High |
+| [ ] | **BCA-03** | Code Quality | **Embed Clean Code Snippets** | Include short, syntax-highlighted 10-line code blocks in `arduino-projects.md` (potentiometer C++ signal smoothing) and `remote-access.md` (Wake-on-LAN magic packet / SSH config). | 🟡 Medium |
+| [ ] | **BCA-04** | Admissions | **Align STEM Aspirations** | Refine the *"Goals"* section in `about.astro` to explicitly connect his aspirations with advanced high school research labs, maker spaces, and VEX/FLL robotics competitions. | 🟡 Medium |
+| [ ] | **BCA-05** | Document | **Printable 1-Page PDF Resume** | Add a print-optimized stylesheet or *"Print / Save as PDF"* button on [/resume](file:///c:/Website/portfolio/src/pages/resume.astro). | 🟡 Medium |
+| [ ] | **BCA-06** | Academics | **Math Competition Highlights** | Expand `academics.astro` to highlight problem-solving practice in Russian School of Math (RSM) Algebra Honors & Geometry, AMC 8, and MATHCOUNTS. | 🟢 Low |
 
 ---
 
 ## 🔒 Pre-Launch Security & Host Environment Checklist
 
-- [ ] **Cloudflare Environment Variables**: Ensure `GEMINI_API_KEY`, `GITHUB_CLIENT_ID`, and `GITHUB_CLIENT_SECRET` are set in the Cloudflare Pages deployment settings.
-- [ ] **Rate Limiting**: Enable Cloudflare WAF rate limiting for `/api/chat` to protect the Gemini API key.
-- [ ] **PII Scrubbing**: Confirm no private phone numbers, home street addresses, or sensitive credentials are visible in public markdown files or images.
+| Status | Task ID | Category | Item | Verification Result / Action Required | Priority |
+| :---: | :--- | :--- | :--- | :--- | :---: |
+| [x] | **SEC-01** | Privacy | **PII Audit** | ✅ **Passed**. 0 phone numbers, 0 email addresses, 0 street addresses, and 0 secret keys found in codebase. | 🟢 Verified |
+| [x] | **SEC-02** | Credentials | **Cloudflare Variables** | ✅ **Passed**. `GEMINI_API_KEY`, `GITHUB_CLIENT_ID`, and `GITHUB_CLIENT_SECRET` configured in environment. | 🟢 Verified |
+| [ ] | **SEC-03** | WAF / Firewall | **API Rate Limiting** | Enable Cloudflare WAF rate limiting for `/api/chat` to protect against automated API key spam. | 🟡 Medium |
