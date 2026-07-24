@@ -110,19 +110,79 @@ const pageTitle = title ? `${title} · ${SITE.name}` : `${SITE.name} — Aspirin
         const overlay = document.getElementById('lightbox-overlay');
         const lbImg = document.getElementById('lightbox-img');
         const closeBtn = document.getElementById('lightbox-close');
+        let activeThumb = null;
 
-        // Attach click listener to all content images
         document.body.addEventListener('click', (e) => {
           if (e.target.tagName === 'IMG' && !e.target.closest('#lightbox-overlay') && !e.target.closest('.arcade')) {
-            // Ignore small icons or logos
             if (e.target.clientWidth < 100) return;
+            activeThumb = e.target;
             
-            lbImg.src = e.target.src;
-            overlay.classList.add('active');
+            // 1. First (record initial state of thumbnail)
+            const firstRect = activeThumb.getBoundingClientRect();
+            
+            // 2. Set src and display overlay to get final state
+            lbImg.src = activeThumb.src;
+            overlay.style.display = 'flex';
+            
+            // Wait for image to load to get its natural aspect ratio
+            lbImg.onload = () => {
+              // 3. Last (record final state in center of screen)
+              const lastRect = lbImg.getBoundingClientRect();
+              
+              // 4. Invert (apply transform to match first state)
+              const scaleX = firstRect.width / lastRect.width;
+              const scaleY = firstRect.height / lastRect.height;
+              
+              // We use transform-origin top left, so we just calculate translation to top left
+              const translateX = firstRect.left - lastRect.left;
+              const translateY = firstRect.top - lastRect.top;
+              
+              lbImg.style.transition = 'none';
+              lbImg.style.transform = `translate(${translateX}px, ${translateY}px) scale(${scaleX}, ${scaleY})`;
+              
+              // Force reflow
+              lbImg.offsetWidth; 
+              
+              // 5. Play (animate to center)
+              lbImg.style.transition = 'transform 0.4s cubic-bezier(0.2, 0, 0.2, 1)';
+              lbImg.style.transform = 'translate(0, 0) scale(1)';
+              overlay.classList.add('active');
+            };
+            
+            // Trigger onload if already cached
+            if (lbImg.complete) lbImg.onload();
           }
         });
 
-        const closeLightbox = () => overlay.classList.remove('active');
+        const closeLightbox = () => {
+          if (activeThumb) {
+            // Animate back to thumbnail
+            const firstRect = activeThumb.getBoundingClientRect();
+            
+            // Get current un-transformed rect of the lightbox image
+            lbImg.style.transition = 'none';
+            lbImg.style.transform = 'translate(0,0) scale(1)';
+            const lastRect = lbImg.getBoundingClientRect();
+            
+            const scaleX = firstRect.width / lastRect.width;
+            const scaleY = firstRect.height / lastRect.height;
+            const translateX = firstRect.left - lastRect.left;
+            const translateY = firstRect.top - lastRect.top;
+            
+            // Re-apply transition and animate
+            lbImg.offsetWidth; // reflow
+            lbImg.style.transition = 'transform 0.4s cubic-bezier(0.2, 0, 0.2, 1)';
+            lbImg.style.transform = `translate(${translateX}px, ${translateY}px) scale(${scaleX}, ${scaleY})`;
+          }
+          
+          overlay.classList.remove('active');
+          setTimeout(() => {
+            if (!overlay.classList.contains('active')) {
+              overlay.style.display = 'none';
+              lbImg.src = '';
+            }
+          }, 400);
+        };
         
         closeBtn.addEventListener('click', closeLightbox);
         overlay.addEventListener('click', (e) => {

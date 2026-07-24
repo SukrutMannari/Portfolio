@@ -398,7 +398,7 @@ body.editing [data-edit]{outline:1px dashed var(--orange);outline-offset:3px}
   justify-content: center;
   opacity: 0;
   pointer-events: none;
-  transition: opacity 0.3s ease;
+  transition: opacity 0.4s cubic-bezier(0.2, 0, 0.2, 1);
 }
 #lightbox-overlay.active {
   opacity: 1;
@@ -408,13 +408,10 @@ body.editing [data-edit]{outline:1px dashed var(--orange);outline-offset:3px}
   max-width: 90vw;
   max-height: 90vh;
   object-fit: contain;
-  border-radius: 8px;
+  border-radius: 4px;
   box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
-  transform: scale(0.95);
-  transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-}
-#lightbox-overlay.active #lightbox-img {
-  transform: scale(1);
+  transform-origin: top left;
+  will-change: transform;
 }
 #lightbox-close {
   position: absolute;
@@ -426,9 +423,13 @@ body.editing [data-edit]{outline:1px dashed var(--orange);outline-offset:3px}
   background: none;
   border: none;
   line-height: 1;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  z-index: 2;
+}
+#lightbox-overlay.active #lightbox-close {
   opacity: 0.7;
-  transition: opacity 0.2s;
 }
 #lightbox-close:hover {
-  opacity: 1;
+  opacity: 1 !important;
 }
