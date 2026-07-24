@@ -11,4 +11,4 @@ Today I was formally inducted into the National Junior Honor Society. NJHS isn't
 
 I'm excited to help lead homework-help sessions and to pitch two ideas I care about: a FIRST Lego League club and a school e-waste recycling drive.
 
-<img src="/photos/njhs_induction_2.jpg" alt="NJHS Induction Ceremony stage" style="width:100%; border-radius:5px; border:1px solid var(--line-soft); margin:18px 0;" />
+<img src="/photos/njhs_certificate.jpg" alt="Receiving the NJHS certificate on stage" style="width:100%;" />

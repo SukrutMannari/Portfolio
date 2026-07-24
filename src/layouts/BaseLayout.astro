@@ -98,5 +98,42 @@ const pageTitle = title ? `${title} · ${SITE.name}` : `${SITE.name} — Aspirin
       })();
     </script>
     <AIGuide />
+    
+    <!-- Lightbox Overlay -->
+    <div id="lightbox-overlay">
+      <button id="lightbox-close">&times;</button>
+      <img id="lightbox-img" src="" alt="Zoomed Image" />
+    </div>
+
+    <script is:inline>
+      document.addEventListener('DOMContentLoaded', () => {
+        const overlay = document.getElementById('lightbox-overlay');
+        const lbImg = document.getElementById('lightbox-img');
+        const closeBtn = document.getElementById('lightbox-close');
+
+        // Attach click listener to all content images
+        document.body.addEventListener('click', (e) => {
+          if (e.target.tagName === 'IMG' && !e.target.closest('#lightbox-overlay') && !e.target.closest('.arcade')) {
+            // Ignore small icons or logos
+            if (e.target.clientWidth < 100) return;
+            
+            lbImg.src = e.target.src;
+            overlay.classList.add('active');
+          }
+        });
+
+        const closeLightbox = () => overlay.classList.remove('active');
+        
+        closeBtn.addEventListener('click', closeLightbox);
+        overlay.addEventListener('click', (e) => {
+          if (e.target === overlay) closeLightbox();
+        });
+        document.addEventListener('keydown', (e) => {
+          if (e.key === 'Escape' && overlay.classList.contains('active')) {
+            closeLightbox();
+          }
+        });
+      });
+    </script>
   </body>
 </html>

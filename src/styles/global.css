@@ -372,3 +372,63 @@ body.editing [data-edit]{outline:1px dashed var(--orange);outline-offset:3px}
   section{padding:40px 18px}
   .reel{height:260px}
 }
+
+/* Image Clarity & Lightbox */
+.pd img, .gallery img, .jcard .jimg, .pane-description img {
+  border-radius: 6px;
+  border: 1px solid var(--line-soft);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+  transition: transform 0.3s ease, box-shadow 0.3s ease, filter 0.3s ease;
+  cursor: zoom-in;
+}
+.pd img:hover, .gallery img:hover, .pane-description img:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(20, 50, 90, 0.12);
+  filter: brightness(1.02);
+}
+
+#lightbox-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(11, 17, 24, 0.95);
+  backdrop-filter: blur(8px);
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+}
+#lightbox-overlay.active {
+  opacity: 1;
+  pointer-events: auto;
+}
+#lightbox-img {
+  max-width: 90vw;
+  max-height: 90vh;
+  object-fit: contain;
+  border-radius: 8px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+  transform: scale(0.95);
+  transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+#lightbox-overlay.active #lightbox-img {
+  transform: scale(1);
+}
+#lightbox-close {
+  position: absolute;
+  top: 24px;
+  right: 28px;
+  color: white;
+  font-size: 32px;
+  cursor: pointer;
+  background: none;
+  border: none;
+  line-height: 1;
+  opacity: 0.7;
+  transition: opacity 0.2s;
+}
+#lightbox-close:hover {
+  opacity: 1;
+}
