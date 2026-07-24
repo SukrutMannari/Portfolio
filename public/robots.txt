@@ -3,4 +3,5 @@ Allow: /
 Disallow: /admin/
 Disallow: /api/
 
+Sitemap: https://sukrutmannari.com/sitemap.xml
 Sitemap: https://sukrutmannari.com/sitemap-index.xml
