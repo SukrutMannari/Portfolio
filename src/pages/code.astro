@@ -4,7 +4,6 @@ import Toolbox from '../components/Toolbox.astro';
 import PyRunner from '../components/PyRunner.astro';
 import AstroShooter from '../components/games/AstroShooter.astro';
 import TowerDefense from '../components/games/TowerDefense.astro';
-import PlaneSim from '../components/games/PlaneSim.astro';
 import { getCollection } from 'astro:content';
 import { TOOLBOX } from '../data/site';
 
@@ -145,13 +144,8 @@ const builds = gamesEntries
                 <TowerDefense />
               )}
 
-              <!-- Case 6: Plane Sim -->
-              {b.category === 'game' && b.entry === 'plane-sim' && (
-                <PlaneSim />
-              )}
-
-              <!-- Case 7: General Placeholder for un-implemented games -->
-              {b.category === 'game' && b.entry !== 'snake' && b.entry !== 'astro-shooter' && b.entry !== 'tower-defense' && b.entry !== 'plane-sim' && (
+              <!-- Case 6: General Placeholder for un-implemented games -->
+              {b.category === 'game' && b.entry !== 'snake' && b.entry !== 'astro-shooter' && b.entry !== 'tower-defense' && (
                 <div class="placeholder-stage">
                   <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="var(--blue)" stroke-width="1.5">
                     <rect x="2" y="6" width="20" height="12" rx="2" />
