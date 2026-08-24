@@ -6,6 +6,10 @@ summary: "Configured the OpenCore bootloader to successfully run macOS Tahoe on 
 skills: ["OpenCore", "macOS", "Hardware spoofing", "ACPI Patching", "EFI Configuration"]
 date: 2026-08-17
 github: "https://github.com/SukrutMannari/Dell-latitude-5300-2-in-1-MacOS-Tahoe"
+thumbnail: "/photos/hackintosh/PXL_20260821_020613860.RAW-01.jpg"
+gallery:
+  - "/photos/hackintosh/PXL_20260821_020613860.RAW-01.jpg"
+  - "/photos/hackintosh/PXL_20260821_020819445.RAW-01.jpg"
 ---
 
 The goal of this project was to successfully install and run **macOS 26 Tahoe** natively on a Dell Latitude 5300 2-in-1 laptop by configuring a custom EFI bootloader using OpenCore.
