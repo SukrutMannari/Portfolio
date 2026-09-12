@@ -15,14 +15,14 @@ date: 2026-05-10
 
 ## The Motivation
 
-I wanted to help myself and my middle school friends practice under realistic Bergen County Academies (BCA) exam constraints without relying on expensive prep software. I realized I could use my coding skills to solve a real-world student need by building a web application that simulates the testing environment, timing constraints, and question formats.
+I wanted to help myself and my middle school friends practice under realistic Bergen County Academies (BCA) exam constraints without relying on expensive prep software. I realized I could use my coding skills to solve a real-world student need by building a web application that simulates the testing environment, timing constraints, and question formats, allowing my peers to practice for free under realistic pressure.
 
 ## The Process & Prompt Engineering
 
-Using the Lovable.dev AI platform, I rapidly prototyped UI elements, timer algorithms, and question navigation. Through iterative prompt engineering, I refined an interactive test app featuring three main capabilities:
+Using the Lovable.dev AI platform, I rapidly prototyped the application. Through iterative prompt engineering, I learned how to instruct the AI to manage complex React UI state, build smooth question navigation, and implement rigid timer logic. By carefully refining my prompts, I was able to build a robust interactive test app featuring three core capabilities:
 
-1. **Timed Test Sections:** strict timers to simulate the real exam pressure.
-2. **Instant Score Feedback:** automatic score calculators with feedback summaries.
-3. **Realistic Question Sets:** sample math and essay questions structured like the real test.
+1. **Timed Test Modules:** Strict countdown timers that simulate the real 60-minute exam pressure and auto-submit when time expires.
+2. **Instant Score Calculators:** Automatic grading algorithms that provide immediate feedback summaries and correct answer explanations.
+3. **Realistic Question Formats:** Sample math and essay questions structured exactly like the real entrance test.
 
 Using my technical skills to directly support my peers was a rewarding challenge that taught me how to gather user feedback and iterate on a product.

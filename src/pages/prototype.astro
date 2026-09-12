@@ -1,0 +1,163 @@
+---
+import PrototypeLayout from '../layouts/PrototypeLayout.astro';
+import { getCollection } from 'astro:content';
+
+const allProjects = await getCollection('projects');
+const featured = allProjects
+  .filter((p) => p.data.featured)
+  .sort((a, b) => a.data.order - b.data.order)
+  .slice(0, 5);
+---
+
+<BaseLayout>
+  <!-- HERO (Liquid Glass Theme) -->
+  <section id="intro" style="
+    position: relative;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding-top: 100px;
+    margin-top: -85px; /* Pull up behind the transparent navbar */
+    max-width: 100%;
+    overflow: hidden;
+  ">
+    <!-- Fullscreen Background with Glass Overlay -->
+    <div style="position: absolute; inset: 0; z-index: -2; background-image: url('/images/blackhole.png'); background-size: cover; background-position: center;"></div>
+    <div style="position: absolute; inset: 0; z-index: -1; background: linear-gradient(to bottom, rgba(11, 17, 24, 0.2), rgba(11, 17, 24, 0.6)); backdrop-filter: blur(2px);"></div>
+    
+    <div class="heading" style="position: relative; z-index: 1; width: 100%; max-width: 1200px; padding: 0 20px;">
+      
+      <!-- Avatar with Spinning Gear -->
+      <div style="position: relative; width: 160px; height: 160px; margin: 0 auto 24px;">
+        <style>
+          @keyframes spin-slow { 100% { transform: rotate(360deg); } }
+        </style>
+        <!-- Spinning Gear -->
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="var(--blue)" style="position: absolute; top: -10px; left: -10px; width: 180px; height: 180px; opacity: 0.8; animation: spin-slow 10s linear infinite; z-index: 1;">
+          <path d="M19.14,12.94c0.04-0.3,0.06-0.61,0.06-0.94c0-0.32-0.02-0.64-0.06-0.94l2.03-1.58c0.18-0.14,0.23-0.41,0.12-0.61 l-1.92-3.32c-0.12-0.22-0.37-0.29-0.59-0.22l-2.39,0.96c-0.5-0.38-1.03-0.7-1.62-0.94L14.4,2.81c-0.04-0.24-0.24-0.41-0.48-0.41 h-3.84c-0.24,0-0.43,0.17-0.47,0.41L9.25,5.35C8.66,5.59,8.12,5.92,7.63,6.29L5.24,5.33c-0.22-0.08-0.47,0-0.59,0.22L2.73,8.87 C2.62,9.08,2.66,9.34,2.86,9.48l2.03,1.58C4.84,11.36,4.8,11.69,4.8,12s0.02,0.64,0.06,0.94l-2.03,1.58 c-0.18,0.14-0.23,0.41-0.12,0.61l1.92,3.32c0.12,0.22,0.37,0.29,0.59,0.22l2.39-0.96c0.5,0.38,1.03,0.7,1.62,0.94l0.36,2.54 c0.05,0.24,0.24,0.41,0.48,0.41h3.84c0.24,0,0.43-0.17,0.47-0.41l0.36-2.54c0.59-0.24,1.13-0.56,1.62-0.94l2.39,0.96 c0.22,0.08,0.47,0,0.59-0.22l1.92-3.32c0.12-0.22,0.07-0.49-0.12-0.61L19.14,12.94z M12,15.6c-1.98,0-3.6-1.62-3.6-3.6 s1.62-3.6,3.6-3.6s3.6,1.62,3.6,3.6S13.98,15.6,12,15.6z"/>
+        </svg>
+        <!-- Avatar Image -->
+        <img src="/images/SukrutCaricature.jpg" alt="Sukrut Mannari" style="position: absolute; top: 10px; left: 10px; width: 140px; height: 140px; border-radius: 50%; z-index: 2; object-fit: cover;" />
+      </div>
+      
+      <!-- Massive Typography -->
+      <h1 id="title" style="font-size: clamp(60px, 14vw, 160px); line-height: 0.9; margin-bottom: 10px; font-weight: 300; letter-spacing: -2px; color: var(--blue);">
+        SUKRUT
+      </h1>
+      <h2 style="font-size: clamp(30px, 6vw, 70px); font-weight: 300; letter-spacing: 4px; color: #fff; margin-bottom: 40px;">
+        MANNARI
+      </h2>
+      
+      <!-- Pastel Social Chips -->
+      <div class="socials-chips" style="justify-content: center; margin-top: 0;">
+        <a href="https://github.com/SukrutMannari" target="_blank" class="socials-chip" style="background: #ffffff; color: #000; border: none; font-weight: 600;">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg> GitHub
+        </a>
+        <a href="#" class="socials-chip" style="background: #ffcccb; color: #000; border: none; font-weight: 600;">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg> Mail
+        </a>
+        <a href="#" class="socials-chip" style="background: #d0ebff; color: #000; border: none; font-weight: 600;">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg> LinkedIn
+        </a>
+        <a href="/engineering" class="socials-chip" style="background: #e6e6fa; color: #000; border: none; font-weight: 600;">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="18" height="18" x="3" y="3" rx="2"/><path d="M7 7h.01M17 7h.01M7 17h.01M17 17h.01"/></svg> Engineering
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ABOUT ME -->
+  <section id="about-me">
+    <div class="label" style="font-size: 24px; color: var(--ink); text-transform: none; font-weight: 700; margin-bottom: 24px; font-family: var(--font-display);">
+      About Me
+    </div>
+    <div class="content">
+      <p style="font-size: 16px; color: var(--ink-dim); max-width: 800px; line-height: 1.7;">
+        I take things apart to understand them, then build them back better. Outside work, I'm usually dealing with an Arduino, a custom CAD model, or training for my 2nd Degree Black Belt.
+      </p>
+      <div class="details-pills">
+        <div class="pill">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+          <span>Sukrut Mannari</span>
+        </div>
+        <div class="pill">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+          <span>New Jersey, USA</span>
+        </div>
+        <div class="pill">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m4 6 8-4 8 4-8 4-8-4Z"/><path d="m18 10 4 2v8a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2v-8l4-2"/><path d="M14 22v-4a2 2 0 0 0-2-2v0a2 2 0 0 0-2 2v4"/></svg>
+          <span>BCA Admissions Candidate</span>
+        </div>
+        <div class="pill">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m18 16 4-4-4-4"/><path d="m6 8-4 4 4 4"/><path d="m14.5 4-5 16"/></svg>
+          <span>C++, Astro, Python</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SHOWCASE -->
+  <section id="projects" style="max-width: 800px; margin: 0 auto; padding-top: 40px; position: relative; z-index: 2;">
+    <div style="text-align: center; margin-bottom: 32px;">
+      <img src="/images/SukrutHeadshot.png" alt="Icon" style="width: 48px; height: 48px; border-radius: 50%; border: 2px solid var(--blue); background: var(--paper-2); display: inline-block; margin-bottom: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.5);" />
+      <h2 style="font-size: 32px; color: var(--blue); font-weight: 800; letter-spacing: 2px; text-transform: uppercase;">SHOWCASE</h2>
+    </div>
+
+    <div style="display: flex; flex-direction: column; gap: 4px; box-shadow: 0 20px 40px rgba(0,0,0,0.3); border-radius: 16px;">
+      {featured.map((p, index) => (
+        <a href={`/projects/${p.slug}`} class="showcase-card" style={`
+          display: flex;
+          align-items: center;
+          gap: 20px;
+          padding: 16px;
+          background: rgba(40, 53, 67, 0.85);
+          backdrop-filter: blur(12px);
+          border: 1px solid rgba(255, 255, 255, 0.05);
+          border-radius: ${index === 0 ? '16px 16px 0 0' : '0'};
+          transition: transform 0.2s, background 0.2s;
+          text-decoration: none;
+        `}
+        onmouseover="this.style.background='rgba(50, 65, 80, 0.95)'; this.style.transform='scale(1.02)'; this.style.zIndex='10'; this.style.boxShadow='0 10px 30px rgba(0,0,0,0.5)';"
+        onmouseout="this.style.background='rgba(40, 53, 67, 0.85)'; this.style.transform='scale(1)'; this.style.zIndex='1'; this.style.boxShadow='none';">
+          
+          <!-- Icon Square -->
+          <div style="width: 96px; height: 96px; background: var(--blue); border-radius: 16px; display: grid; place-items: center; flex-shrink: 0; box-shadow: 0 4px 12px rgba(0,0,0,0.3);">
+            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#000" stroke-width="2" stroke-linejoin="round">
+              <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+            </svg>
+          </div>
+
+          <!-- Content -->
+          <div style="flex-grow: 1;">
+            <h3 style="font-size: 22px; font-weight: 700; color: #fff; margin-bottom: 4px;">{p.data.title}</h3>
+            <p style="font-size: 14px; color: #cbd5e1; margin-bottom: 12px; line-height: 1.4; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">{p.data.summary}</p>
+            
+            <!-- Stats Row -->
+            <div style="display: flex; gap: 8px;">
+              <span style="background: #0f172a; color: #94a3b8; font-size: 11px; padding: 4px 10px; border-radius: 99px; display: inline-flex; align-items: center; gap: 4px; font-weight: 500;">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                {Math.floor(Math.random() * 900) + 10}
+              </span>
+              <span style="background: #0f172a; color: #94a3b8; font-size: 11px; padding: 4px 10px; border-radius: 99px; display: inline-flex; align-items: center; gap: 4px; font-weight: 500;">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>
+                {Math.floor(Math.random() * 50) + 1}k
+              </span>
+              <span style="background: #0f172a; color: #94a3b8; font-size: 11px; padding: 4px 10px; border-radius: 99px; display: inline-flex; align-items: center; gap: 4px; font-weight: 500;">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                {Math.floor(Math.random() * 11) + 1}mo ago
+              </span>
+            </div>
+          </div>
+        </a>
+      ))}
+      <a href="/engineering" style="padding: 16px; background: rgba(30, 41, 59, 0.95); color: #fff; text-align: left; border-radius: 0 0 16px 16px; font-weight: 500; font-size: 14px; text-decoration: none; border: 1px solid rgba(255, 255, 255, 0.05); border-top: none; cursor: none;">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align: text-bottom; margin-right: 4px;"><polyline points="6 9 12 15 18 9"/></svg> Show more
+      </a>
+    </div>
+  </section>
+  
+  <div style="height: 120px;"></div>
+</PrototypeLayout>

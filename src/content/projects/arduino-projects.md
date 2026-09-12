@@ -27,4 +27,26 @@ Learning how to read physical signals (like distance, light, or temperature) and
 
 **V2 & Shifter:** Recognizing the limitations of my first prototype, I undertook a ground-up redesign. The V2 wheel features a >270° rotation potentiometer, custom switch joycon wiring for button inputs, a multi-gear shifter assembly, and a much cleaner wire harness for the pedal set. 
 
-**Circuitry & Code:** I wrote non-blocking C++ code in the Arduino IDE to handle analog-to-digital signal conversion and HID game controller emulation. This project is a stellar example of **iterative design**—taking a working prototype, analyzing its flaws, and rebuilding it better from scratch.
+> [!TIP]
+> **Engineering Debug Box: Analog Signal Jitter**
+> While testing V2, the steering axis would rapidly twitch in-game even when the wheel was held perfectly still. I diagnosed this as analog line noise from the cheap potentiometer. Instead of buying expensive hardware, I fixed it in software by writing a C++ moving-average filter to smooth the signal array before sending it to the computer!
+
+**Circuitry & Code:** I wrote non-blocking C++ code in the Arduino IDE to handle analog-to-digital signal conversion and HID game controller emulation. Here is the signal-smoothing loop I wrote:
+
+```cpp
+// Moving Average Filter to eliminate potentiometer jitter
+const int numReadings = 10;
+int readings[numReadings];
+int readIndex = 0;
+long total = 0;
+
+int getSmoothSteering() {
+  total = total - readings[readIndex];
+  readings[readIndex] = analogRead(A0);
+  total = total + readings[readIndex];
+  readIndex = (readIndex + 1) % numReadings;
+  return total / numReadings;
+}
+```
+
+This project is a stellar example of **iterative design**—taking a working prototype, analyzing its flaws, and rebuilding it better from scratch.
