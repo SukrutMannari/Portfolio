@@ -1,11 +1,11 @@
 ---
 import PrototypeLayout from '../../layouts/PrototypeLayout.astro';
-import Toolbox from '../components/Toolbox.astro';
-import PyRunner from '../components/PyRunner.astro';
-import AstroShooter from '../components/games/AstroShooter.astro';
-import TowerDefense from '../components/games/TowerDefense.astro';
+import Toolbox from '../../components/Toolbox.astro';
+import PyRunner from '../../components/PyRunner.astro';
+import AstroShooter from '../../components/games/AstroShooter.astro';
+import TowerDefense from '../../components/games/TowerDefense.astro';
 import { getCollection } from 'astro:content';
-import { TOOLBOX } from '../data/site';
+import { TOOLBOX } from '../../data/site';
 
 const tb = TOOLBOX.code;
 const gamesEntries = await getCollection('games');
