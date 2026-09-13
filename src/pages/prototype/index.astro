@@ -108,7 +108,11 @@ const featured = allProjects
 
     <div style="display: flex; flex-direction: column; gap: 4px; box-shadow: 0 20px 40px rgba(0,0,0,0.3); border-radius: 16px;">
       {featured.map((p, index) => (
-        <a href={`/prototype/projects/${p.slug}`} class="showcase-card" style={`
+        <a href={`/prototype/projects/${p.slug}`} class="showcase-card"
+          data-preview-title={p.data.title}
+          data-preview-summary={p.data.summary}
+          data-preview-image={p.data.cover || '/images/blackhole.png'}
+          style={`
           display: flex;
           align-items: center;
           gap: 20px;
@@ -160,4 +164,64 @@ const featured = allProjects
   </section>
   
   <div style="height: 120px;"></div>
+
+  <!-- Global Floating Preview for Showcase -->
+  <div id="hover-preview-container" style="
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 340px;
+    pointer-events: none;
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.9);
+    transition: opacity 0.25s cubic-bezier(0.2, 0, 0.2, 1), transform 0.25s cubic-bezier(0.2, 0, 0.2, 1);
+    z-index: 2147483645;
+    background: rgba(15, 23, 42, 0.75);
+    backdrop-filter: blur(16px);
+    border: 1px solid var(--blue);
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 30px 60px rgba(0,0,0,0.6);
+  ">
+    <div style="width: 100%; height: 190px; background: #000; overflow: hidden; position: relative;">
+      <img id="preview-img" src="" alt="Preview" style="width: 100%; height: 100%; object-fit: cover; opacity: 0.8;" />
+      <div style="position: absolute; inset: 0; background: linear-gradient(to bottom, transparent 60%, rgba(15, 23, 42, 1));"></div>
+    </div>
+    <div style="padding: 16px; margin-top: -30px; position: relative; z-index: 2;">
+      <h4 id="preview-title" style="color: #fff; font-weight: 800; font-size: 18px; margin-bottom: 6px; text-shadow: 0 2px 4px rgba(0,0,0,0.5);"></h4>
+      <p id="preview-summary" style="color: #cbd5e1; font-size: 13px; line-height: 1.5; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;"></p>
+    </div>
+  </div>
+
+  <script is:inline>
+    document.addEventListener('DOMContentLoaded', () => {
+      const container = document.getElementById('hover-preview-container');
+      const pTitle = document.getElementById('preview-title');
+      const pSummary = document.getElementById('preview-summary');
+      const pImg = document.getElementById('preview-img');
+
+      document.querySelectorAll('.showcase-card').forEach(card => {
+        card.addEventListener('mouseenter', (e) => {
+          pTitle.textContent = card.getAttribute('data-preview-title');
+          pSummary.textContent = card.getAttribute('data-preview-summary');
+          pImg.src = card.getAttribute('data-preview-image') || '/images/blackhole.png';
+          
+          container.style.opacity = '1';
+          container.style.transition = 'opacity 0.25s, transform 0.1s linear';
+        });
+        
+        card.addEventListener('mousemove', (e) => {
+          // Offset by 20px so cursor doesn't cover it
+          container.style.transform = `translate(${e.clientX + 24}px, ${e.clientY + 24}px) scale(1)`;
+        });
+
+        card.addEventListener('mouseleave', (e) => {
+          container.style.transition = 'opacity 0.2s, transform 0.2s';
+          container.style.opacity = '0';
+          container.style.transform = `translate(${e.clientX + 24}px, ${e.clientY + 24}px) scale(0.95)`;
+        });
+      });
+    });
+  </script>
+
 </PrototypeLayout>
