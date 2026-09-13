@@ -1,0 +1,164 @@
+---
+import PrototypeLayout from '../../layouts/PrototypeLayout.astro';
+import Toolbox from '../components/Toolbox.astro';
+import { getCollection } from 'astro:content';
+import { TOOLBOX, LEADERSHIP_ROLES } from '../data/site';
+
+const tb = TOOLBOX.leadership;
+
+// Live data from collections
+const serviceEntries = await getCollection('service');
+const tkdEntries = await getCollection('taekwondo');
+
+const totalHours = serviceEntries.reduce((sum, e) => sum + (e.data.hours ?? 0), 0);
+const totalSessions = serviceEntries.length;
+const totalTkd = tkdEntries.length;
+
+// Merge and sort activity log reverse-chronologically
+const serviceItems = serviceEntries.map(e => ({
+  type: 'service',
+  date: e.data.date,
+  title: e.data.title,
+  tag: e.data.category,
+  hours: e.data.hours,
+  notes: e.data.notes,
+}));
+const tkdItems = tkdEntries.map(e => ({
+  type: 'taekwondo',
+  date: e.data.date,
+  title: e.data.title,
+  tag: e.data.eventType,
+  hours: undefined,
+  notes: e.data.notes,
+}));
+const allActivity = [...serviceItems, ...tkdItems].sort(
+  (a, b) => b.date.valueOf() - a.date.valueOf()
+);
+
+const fmt = (d: Date) => d.toLocaleDateString('en-US', { month: 'short', year: 'numeric' }).toUpperCase();
+
+// Status → pstat class mapping
+function statusClass(status: string) {
+  if (status === 'Active') return 'complete';
+  if (status === 'In Progress') return 'in-progress';
+  if (status === 'Planned') return 'planned';
+  return 'alumni';
+}
+---
+
+<PrototypeLayout title="Leadership & Service">
+  <div class="page-head">
+    <div class="label">// LEADERSHIP &amp; SERVICE</div>
+    <h1 data-edit>Leadership is responsibility you choose.</h1>
+    <p data-edit>From mentoring younger students to serving at the community library, I look for ways to step up.</p>
+  </div>
+
+  <section style="padding-top:0;padding-bottom:0"><Toolbox label={tb.label} items={tb.items} /></section>
+
+  <!-- Zone 1: Stat strip (live-calculated) -->
+  <section style="padding-top:28px;padding-bottom:0">
+    <div class="stats">
+      <div class="stat">
+        <div class="num">{totalHours.toFixed(1)}</div>
+        <div class="cap">SERVICE HOURS<br />COMMUNITY LIBRARY &amp; NJHS</div>
+      </div>
+      <div class="stat">
+        <div class="num">{String(totalSessions).padStart(2,'0')}</div>
+        <div class="cap">SERVICE<br />SESSIONS LOGGED</div>
+      </div>
+      <div class="stat">
+        <div class="num">{String(totalTkd).padStart(2,'0')}</div>
+        <div class="cap">TAEKWONDO<br />EVENTS LOGGED</div>
+      </div>
+      <div class="stat">
+        <div class="num">2nd</div>
+        <div class="cap">DEGREE<br />BLACK BELT</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Zone 2: Role cards -->
+  <section style="padding-bottom:0">
+    <div class="label">// ROLES &amp; INITIATIVES</div>
+    <div class="grid3">
+      {LEADERSHIP_ROLES.map(r => (
+        <div class="card">
+          <div class="card-body">
+            <div class="ptag">
+              {r.title}
+              <span class={`pstat ${statusClass(r.status)}`}>{r.status.toUpperCase()}</span>
+            </div>
+            <h3>{r.subtitle}</h3>
+            <p>{r.description}</p>
+          </div>
+        </div>
+      ))}
+    </div>
+  </section>
+
+  <!-- Zone 3: Activity log with filter -->
+  <section>
+    <div class="label">// ACTIVITY LOG</div>
+    <div class="filter-bar">
+      <button class="filter-pill active" data-filter="all">All</button>
+      <button class="filter-pill" data-filter="service">Service</button>
+      <button class="filter-pill" data-filter="taekwondo">Taekwondo</button>
+    </div>
+    <div class="grid3" id="activity-grid">
+      {allActivity.map(item => (
+        <div class="card" data-type={item.type}>
+          <div class="card-body">
+            <div class="ptag">
+              <span class="chip">{item.tag.toUpperCase()}</span>
+              <span style="font-family:var(--font-mono);font-size:10px;color:var(--ink-dim)">{fmt(item.date)}</span>
+            </div>
+            <h3>{item.title}</h3>
+            {item.hours !== undefined && (
+              <p style="font-family:var(--font-mono);font-size:11px;color:var(--orange);margin-bottom:6px">{item.hours} hrs</p>
+            )}
+            {item.notes && <p>{item.notes}</p>}
+          </div>
+        </div>
+      ))}
+    </div>
+  </section>
+</PrototypeLayout>
+
+<style>
+  .filter-bar {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+  }
+  .filter-pill {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.5px;
+    padding: 6px 14px;
+    border: 1px solid var(--line);
+    background: var(--paper-2);
+    color: var(--ink-dim);
+    border-radius: 3px;
+    cursor: pointer;
+    transition: .15s;
+  }
+  .filter-pill:hover { border-color: var(--blue); color: var(--blue); }
+  .filter-pill.active { background: var(--blue); border-color: var(--blue); color: #fff; }
+</style>
+
+<script>
+  const pills = document.querySelectorAll<HTMLElement>('.filter-pill');
+  const cards = document.querySelectorAll<HTMLElement>('#activity-grid .card');
+
+  pills.forEach(pill => {
+    pill.addEventListener('click', () => {
+      pills.forEach(p => p.classList.remove('active'));
+      pill.classList.add('active');
+      const filter = pill.getAttribute('data-filter')!;
+      cards.forEach(card => {
+        card.style.display = (filter === 'all' || card.getAttribute('data-type') === filter) ? '' : 'none';
+      });
+    });
+  });
+</script>

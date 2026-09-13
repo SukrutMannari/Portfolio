@@ -1,14 +1,21 @@
 ---
 import { NAV } from '../data/site';
 const path = Astro.url.pathname;
+
+// Map standard routes to prototype routes
+const PROTOTYPE_NAV = NAV.map(item => ({
+  ...item,
+  href: item.href === '/' ? '/prototype' : `/prototype${item.href}`
+}));
+
 const isActive = (href: string) =>
-  href === '/' ? path === '/' : path.startsWith(href);
+  href === '/prototype' ? path === '/prototype' : path.startsWith(href);
 ---
 
 <div class="macos-dock-container">
   <div class="macos-dock">
     {
-      NAV.map((item, i) => (
+      PROTOTYPE_NAV.map((item, i) => (
         <a
           class:list={['dock-item', { active: isActive(item.href) }]}
           href={item.href}
